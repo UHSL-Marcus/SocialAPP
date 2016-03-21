@@ -13,5 +13,20 @@ namespace SocialApp
         {
 
         }
+
+        protected void profileBtn_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        protected void statsBtn_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        protected void mapsBtn_Click(object sender, EventArgs e)
+        {
+            
+        }
     }
 }

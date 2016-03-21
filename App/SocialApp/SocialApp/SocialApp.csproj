@@ -147,10 +147,13 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Pages\Default.css" />
+    <Content Include="Content\Pages\Master.css" />
     <Content Include="Content\Site.css" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\temp.css" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
     <Content Include="Content\themes\base\autocomplete.css" />
@@ -184,10 +187,19 @@
     <Content Include="Content\themes\base\tabs.css" />
     <Content Include="Content\themes\base\theme.css" />
     <Content Include="Content\themes\base\tooltip.css" />
+    <Content Include="Content\Utils\Flex.css" />
+    <Content Include="Content\Utils\Misc.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Pages\Maps.aspx" />
     <Content Include="Pages\Profile.aspx" />
     <Content Include="Pages\Stats.aspx" />
+    <Content Include="Resources\Backgrounds\Background.png" />
+    <Content Include="Resources\Icons\02-Stats.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Icons\03-Profile.png" />
+    <Content Include="Resources\Icons\04-Maps.png" />
+    <Content Include="Resources\Icons\backArrow.png" />
     <Content Include="Scripts\ai.0.15.0-build58334.js" />
     <Content Include="Scripts\ai.0.15.0-build58334.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -197,10 +209,24 @@
     <Content Include="Scripts\jquery-ui-1.11.4.js" />
     <Content Include="Scripts\jquery-ui-1.11.4.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\Pages\Create.js" />
+    <Content Include="Scripts\Pages\Default.js" />
+    <Content Include="Scripts\Pages\Maps.js" />
+    <Content Include="Scripts\Pages\Master.js" />
+    <Content Include="Scripts\Pages\Profile.js" />
+    <Content Include="Scripts\Pages\Stats.js" />
+    <Content Include="Scripts\Pages\StatsVisual.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\Utils\DateDropdown.js" />
+    <Content Include="Scripts\Utils\FormValidation.js" />
+    <Content Include="Scripts\Utils\headerHider.js" />
+    <Content Include="Scripts\Utils\jquery.canvasjs.min.js" />
+    <Content Include="Scripts\Utils\jsonStringify.js" />
+    <Content Include="Scripts\Utils\jspostcode.js" />
+    <Content Include="Scripts\Utils\jstelnumbers.js" />
     <Content Include="Scripts\WebForms\DetailsView.js" />
     <Content Include="Scripts\WebForms\Focus.js" />
     <Content Include="Scripts\WebForms\GridView.js" />
@@ -242,6 +268,7 @@
     <None Include="Project_Readme.html" />
     <Content Include="Site.Mobile.Master" />
     <Content Include="Scripts\jquery-2.2.1.min.map" />
+    <Content Include="Scripts\Utils\aefvkunf.zer~" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -312,6 +339,13 @@
     <Compile Include="Site.Mobile.Master.designer.cs">
       <DependentUpon>Site.Mobile.Master</DependentUpon>
     </Compile>
+    <Compile Include="Utils\DateMenu.cs" />
+    <Compile Include="Utils\HelperMethods.cs" />
+    <Compile Include="Utils\HTTPRequest.cs" />
+    <Compile Include="Utils\Paths.cs" />
+    <Compile Include="Utils\SOAPRequest.cs" />
+    <Compile Include="Utils\tempObject.cs" />
+    <Compile Include="Utils\XMLParse.cs" />
     <Compile Include="ViewSwitcher.ascx.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

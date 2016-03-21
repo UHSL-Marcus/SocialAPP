@@ -12,6 +12,22 @@ namespace SocialApp
         // For more information on Bundling, visit http://go.microsoft.com/fwlink/?LinkID=303951
         public static void RegisterBundles(BundleCollection bundles)
         {
+            bundles.Add(new ScriptBundle("~/bundles/Scripts/Utils").Include(
+                           "~/Scripts/Utils/DateDropdown.js",
+                           "~/Scripts/Utils/FormValidation.js",
+                           "~/Scripts/Utils/jspostcode.js",
+                           "~/Scripts/Utils/jstelnumbers.js",
+                           "~/Scripts/Utils/jquery.canvasjs.min.js",
+                           "~/Scripts/Utils/jsonStringify.js",
+                           "~/Scripts/Utils/headerHider.js"
+                           ));
+
+            bundles.Add(new StyleBundle("~/bundles/Content/Utils").Include(
+                            "~/Content/Utils/Flex.css",
+                            "~/Content/Utils/Misc.css",
+                            "~/Content/Pages/Master.css"
+                            ));
+
             bundles.Add(new ScriptBundle("~/bundles/WebFormsJs").Include(
                             "~/Scripts/WebForms/WebForms.js",
                             "~/Scripts/WebForms/WebUIValidation.js",
