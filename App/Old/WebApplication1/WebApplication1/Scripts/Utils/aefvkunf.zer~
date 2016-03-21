@@ -1,0 +1,49 @@
+﻿
+
+hideMode = false;
+
+function setHeaderHidden(hide)
+{
+    if (hide) modeSwitch(false);
+    else modeSwitch("true");
+    hideHeader(hide);
+    hideMode = hide;
+}
+
+function modeSwitch(overlay)
+{
+    if (overlay) $('.headerFixed').removeClass("headerFixed").addClass("headerOverlay"); 
+    else $('.headerOverlay').removeClass("headerOverlay").addClass("headerFixed");
+}
+
+function hideHeader(hide)
+{
+    if (hide) {
+        $(".headerFixed").hide();
+        wireup_mouseoverEvent();
+    }
+    else {
+        $(".headerFixed").show();
+        wireup_mouseoutEvent();
+    }
+}
+
+function wireup_mouseoverEvent()
+{
+    $('#header').off();
+    $('#mouseoverHeaderDiv').mouseover(function () {
+        alert("mouseover");
+        if (hideMode) hideHeader(false);
+    })
+
+}
+
+function wireup_mouseoutEvent()
+{
+    $('#mouseoverHeaderDiv').off();
+
+    $('#header').mouseout(function () {
+        alert("mouseout");
+        if (hideMode) hideHeader(true);
+    })
+}

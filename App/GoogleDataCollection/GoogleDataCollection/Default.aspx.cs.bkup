@@ -1,0 +1,430 @@
+﻿using GoogleDataCollection.Town;
+using GoogleDataCollection.Utils;
+using Newtonsoft.Json;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.Serialization;
+
+namespace GoogleDataCollection
+{
+    public partial class _Default : Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "map" + UniqueID, "loadMap();", true);
+            else
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "map" + UniqueID, "loadOverlayInit();", true);
+
+            //doJsonRead();
+        }
+
+        protected void uploadResults_Click(object sender, EventArgs e)
+        {
+            String ErrorString = "";
+            String TempError = "";
+            String soapBody = "";
+            //string[] uploadedServices = placeData.Value.Split(new Char[] { ';' });
+            String rawServiceText = ServiceData.Value;
+            string folderPath = Server.MapPath("");
+            ArrayList services = new ArrayList();
+
+            try
+            {
+                TempError = "";
+                rawService rawServiceOb = JsonConvert.DeserializeObject<rawService>(rawServiceText);
+                town townOb = JsonConvert.DeserializeObject<town>(TownData.Value);
+
+                TempError = "String to Object Completed\n";
+
+                service serviceToStore = new service();
+                serviceToStore.place_id = rawServiceOb.place_id;
+                serviceToStore.name = rawServiceOb.name;
+                serviceToStore.formatted_address = rawServiceOb.formatted_address;
+                serviceToStore.formatted_phone_number = rawServiceOb.formatted_phone_number;
+                serviceToStore.website = rawServiceOb.website;
+                serviceToStore.location = new latLng(rawServiceOb.geometry.location.A, rawServiceOb.geometry.location.F);
+
+                TempError += "Primitive data set\n";
+
+                double initalRating = rawServiceOb.rating * 2; // 0 - 5 --> 0 - 10
+                int totalAspectRating = 0;
+                int aspectRatingCount = 0;
+                double aspectRating = 0;
+
+                if (rawServiceOb.aspects != null)
+                {
+                    foreach (aspects aspect in rawServiceOb.aspects)
+                    {
+                        //if (aspect.type.Equals("overall"))
+                        //{
+                            totalAspectRating += (int)aspect.rating;
+                            aspectRatingCount++;
+                       // }
+                    }
+                }
+
+                if (rawServiceOb.reviews != null)
+                {
+                    foreach (reviews review in rawServiceOb.reviews)
+                    {
+                        foreach (aspects aspect in review.aspects)
+                        {
+                            //if (aspect.type.Equals("overall")) // only bother with overall, we don't need to much fidelity
+                            //{
+                                totalAspectRating += (int)aspect.rating;
+                                aspectRatingCount++;
+                           // }
+                        }
+
+                    }
+
+                    aspectRatingCount = aspectRatingCount * 3; // max for each aspect is 3.
+                    if (totalAspectRating > 0 && aspectRating > 0)
+                        aspectRating = ((double)totalAspectRating / (double)aspectRatingCount) * 10;
+                }
+
+                TempError += "initalRating: " + initalRating + ", aspectRating: " + aspectRating + "\n";
+
+                int divisor = 2;
+                if (initalRating < 1 || aspectRating < 1)
+                    divisor = 1;
+
+                if (!Double.TryParse("" + ((initalRating + aspectRating) / divisor), out serviceToStore.rating)) // average of them both to create the rating
+                    serviceToStore.rating = (double)0;
+
+                TempError += "calculated Rating: " + serviceToStore.rating + "\n";
+
+                TempError += "Rating set\n";
+
+                string typesFilename = "initial_categorisation.txt";
+                string typesPath = Path.Combine(folderPath, typesFilename);
+
+                String[] categoriesAndTypes = Regex.Replace(File.ReadAllText(typesPath, System.Text.Encoding.ASCII), @"\t|\n|\r", "").Split(new Char[] { ';' });
+
+                ArrayList splitTypes = new ArrayList();
+
+                for (int i = 0; i < categoriesAndTypes.Length; i++)
+                {
+                    splitTypes.Add(categoriesAndTypes[i].Split(new Char[] { ',' }));
+                }
+
+                Dictionary<String, ArrayList> tempcategory = new Dictionary<String, ArrayList>();
+                foreach (String[] categoryArray in splitTypes) // array of types and their category (index 0 is the category name)
+                {
+                    foreach (String type in categoryArray) // each type string
+                    {
+                        if (rawServiceOb.types.Contains(type)) // this service has this type
+                        {
+                            if (tempcategory.ContainsKey(categoryArray[0])) // already an entry 
+                            {
+                                if (!tempcategory[categoryArray[0]].Contains(type))
+                                    tempcategory[categoryArray[0]].Add(type);
+                            }
+                            else
+                            {
+                                tempcategory.Add(categoryArray[0], new ArrayList() { type });
+                            }
+
+                        }
+                    }
+
+                }
+
+                ArrayList tempAllcats = new ArrayList();
+                foreach (KeyValuePair<String, ArrayList> pair in tempcategory)
+                {
+                    tempAllcats.Add(new category(pair.Key, (String[])pair.Value.ToArray(typeof(String))));
+                }
+                serviceToStore.categories = (category[])tempAllcats.ToArray(typeof(category));
+
+                TempError += "Categories Set\n";
+
+                String action = "SetNewService";
+                String serviceID = "-1";
+
+                TempError += "Getting Town...\n";
+                int townID = getTownID(townOb);
+
+                TempError += "services for town HTTP request\n";
+                XMLParse Allservices = new XMLParse(HttpSOAPRequest("<TownID>" + townID + "</TownID>", "GetAllServicesForTownByID"));
+                ArrayList allservicenames = Allservices.getAllElementsText("Name");
+
+                TempError += "Checking if update or new service\n";
+                if (arrayListContainsCaseinsensitve(allservicenames, serviceToStore.name))
+                {
+                    action = "UpdateTownServices";
+                    serviceID = Allservices.getElementFromSibling("Service", "Name", serviceToStore.name, "ServiceID");
+                }
+
+                soapBody = "<Service>" +
+                                new XElement("ServiceID", serviceID) +
+                                new XElement("Name", serviceToStore.name) +
+                                new XElement("TownID", townID);
+         
+                TempError += "Updating categoies and subcategories\n";
+
+                updateCategories(tempcategory);
+
+                XMLParse allcategories = new XMLParse(HttpSOAPRequest("", "GetListOfCategories"));
+                ArrayList allcatnames = allcategories.getAllElementsText("CategoryName");
+                XMLParse allsubcats = new XMLParse(HttpSOAPRequest("", "GetListOfSubCategories"));
+                ArrayList allsubcatnames = allsubcats.getAllElementsText("SubCategoryName");
+                ArrayList catIDs = new ArrayList();
+                ArrayList subcatIDs = new ArrayList();
+
+                TempError += "Adding category and subcategory IDs\n";
+                foreach (KeyValuePair<String, ArrayList> cat in tempcategory)
+                {
+                    if (arrayListContainsCaseinsensitve(allcatnames, cat.Key))
+                    {
+                        String tempcatID = allcategories.getElementFromSibling("Categories", "CategoryName", cat.Key, "CategoryID");
+                        if (!arrayListContainsCaseinsensitve(catIDs, tempcatID))
+                            catIDs.Add(tempcatID);
+                    }
+                    foreach (String subcat in cat.Value)
+                    {
+                        if (arrayListContainsCaseinsensitve(allsubcatnames, subcat))
+                        {
+                            String tempsubcatID = allsubcats.getElementFromSibling("SubCategories", "SubCategoryName", subcat, "SubCategoryID");
+                            if (!arrayListContainsCaseinsensitve(subcatIDs, tempsubcatID))
+                                subcatIDs.Add(tempsubcatID);
+                        }
+                    }
+                        
+                }
+                soapBody += "<CategoryIDs>";
+                foreach (String id in catIDs)
+                    soapBody += new XElement("string", id);
+
+                soapBody += "</CategoryIDs><SubCategoryIDs>";
+                foreach(String id in subcatIDs)
+                    soapBody += new XElement("string", id);
+
+                soapBody += "</SubCategoryIDs>" +
+                                new XElement("Rating", serviceToStore.rating) +
+                                new XElement("Latitude", serviceToStore.location.lat) +
+                                new XElement("Longitude", serviceToStore.location.lng) +
+                                new XElement("HasPerimeter", 0);
+
+                TempError += "Category and subcategory added to soapBody\n";
+
+                TempError += "Adding virtual Services\n";
+                if (serviceToStore.website != null)
+                {
+                    soapBody += new XElement("HasVirtualServices", 1) +
+                                "<VirtualServices>" +
+                                new XElement("string", serviceToStore.website);
+                }
+                else soapBody += new XElement("HasVirtualServices", 0) +
+                                "<VirtualServices>";
+
+
+                soapBody += "</VirtualServices></Service>";
+
+                TempError += "Sending soap request\n";
+
+                String response = HttpSOAPRequest(soapBody.Replace("'", "''"), action);
+
+                TempError = "Response: " + response;
+
+
+            }
+            catch (Exception ex) {
+                ErrorString += "\n------New Error-------\nRaw Data: " + rawServiceText + "\nSOAP:\n" + soapBody +"\nLog:\n";
+                ErrorString += TempError + "\nException:\n";
+                ErrorString += ex.ToString();
+            }
+            
+
+            errorText.Value += ErrorString;
+        }
+
+        private int getTownID(town town)
+        {
+            XMLParse towns = new XMLParse(HttpSOAPRequest("", "GetListOfTowns"));
+            ArrayList townNames = towns.getAllElementsText("Town");
+            int townID = -1;
+
+            string townName = "";
+            string county = "";
+            string lat = town.geometry.location.A;
+            string lng = town.geometry.location.F;
+            foreach (address_componets com in town.address_components)
+            {
+                if (arrayListContainsCaseinsensitve(new ArrayList(com.types), "locality"))
+                    townName = com.long_name;
+
+                if (arrayListContainsCaseinsensitve(new ArrayList(com.types), "administrative_area_level_2"))
+                    county = com.long_name;
+                
+            }
+
+            if (arrayListContainsCaseinsensitve(townNames, townName))
+                int.TryParse(towns.getElementFromSibling("Towns", "Town", townName, "TownID"), out townID);
+
+            if (townID > -1)
+                return townID;
+            else
+            {
+                String soapBody = "<Town>" + new XElement("TownID", "-1") + 
+                    new XElement("Town", townName) + new XElement("County", county) +
+                    new XElement("Latitude", town.geometry.location.A) + 
+                    new XElement("Longitude", town.geometry.location.F) +
+                    new XElement("HasPerimeter", "0") + "</Town>";
+
+                HttpSOAPRequest(soapBody, "SetNewTown");
+
+                return getTownID(town);
+
+            }
+        }
+        private void updateCategories(Dictionary<String, ArrayList> catAndSubCat)
+        {
+            foreach (KeyValuePair<String, ArrayList> cat in catAndSubCat)
+            {
+                XMLParse allcategories = new XMLParse(HttpSOAPRequest("", "GetListOfCategories"));
+                ArrayList allcatnames = allcategories.getAllElementsText("CategoryName");
+                
+                updateSubCategories(cat.Value);
+                XMLParse allsubcats = new XMLParse(HttpSOAPRequest("", "GetListOfSubCategories"));
+                ArrayList allsubcatnames = allsubcats.getAllElementsText("SubCategoryName");
+
+                String action = "SetNewCategory";
+                String id = "-1";
+                ArrayList subcatIDs = new ArrayList();
+
+                if (arrayListContainsCaseinsensitve(allcatnames, cat.Key))
+                {
+                    action = "";
+                    id = allcategories.getElementFromSibling("Categories", "CategoryName", cat.Key, "CategoryID");
+                    subcatIDs = new XMLParse(allcategories.getElementFromSibling("Categories", "CategoryName", cat.Key, "SubCategories", true)).getWholeSection("string");
+
+                    foreach (String type in cat.Value)
+                    {
+                        if (arrayListContainsCaseinsensitve(allsubcatnames, type))
+                        {
+                            String tempID = allsubcats.getElementFromSibling("SubCategories", "SubCategoryName", type, "SubCategoryID");
+                            if (!arrayListContainsCaseinsensitve(subcatIDs, tempID))
+                            {
+                                action = "UpdateCategory";
+                                break;
+                            }
+                        }
+
+                    }
+
+
+                }
+                
+                if (action.Length > 1)
+                {
+                    String soapBody = @"<Category>
+                                            <CategoryID>" + id + @"</CategoryID>
+                                            <CategoryName>" + cat.Key + @"</CategoryName>
+                                            <SubCategories>";
+
+                    foreach (String subcatID in subcatIDs)
+                        soapBody += "<string>" + subcatID + "</string>";
+
+                    foreach(String type in cat.Value)
+                    {
+                        if (arrayListContainsCaseinsensitve(allsubcatnames, type))
+                        {
+                            int tempID;
+                            if (int.TryParse(allsubcats.getElementFromSibling("SubCategories", "SubCategoryName", type, "SubCategoryID"), out tempID))
+                            {
+                                if (!arrayListContainsCaseinsensitve(subcatIDs, ""+tempID))
+                                    soapBody += "<string>" + tempID + "</string>";
+                            }
+                        }
+                    }
+
+                    soapBody += @"  </SubCategories>
+                                </Category>";
+
+                    HttpSOAPRequest(soapBody, action);
+                         
+                }
+            }
+        }
+
+        // Creates any new subcategories in the database if needed, based on a passed arraylist of names
+        private void updateSubCategories (ArrayList types)
+        {
+            // grab all subcategories, then grab all the names
+            XMLParse allsubcats = new XMLParse(HttpSOAPRequest("", "GetListOfSubCategories"));
+            ArrayList names = allsubcats.getAllElementsText("SubCategoryName");
+            
+            // for each of the passed types check if it exists in the list of names
+            foreach (String type in types)
+            {
+                if (!arrayListContainsCaseinsensitve(names, type))
+                {
+                    // Create a new subcategory if the name is not in the list
+                    String soapBody = @"<Subcategory>
+                                            <SubCategoryID>-1</SubCategoryID>
+                                            <SubCategoryName>" + type + @"</SubCategoryName>
+                                        </Subcategory>";
+                    HttpSOAPRequest(soapBody, "SetNewSubCategory");
+                }
+            }
+
+        }
+
+        private Boolean arrayListContainsCaseinsensitve(ArrayList al, String ob)
+        {
+            foreach (String entry in al)
+                if(string.Equals(entry, ob, StringComparison.OrdinalIgnoreCase))
+                    return true;
+
+            return false;
+        }
+
+        public String HttpSOAPRequest(String body, string action)
+        {
+            string SOAPReq = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            SOAPReq += "<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">";
+            SOAPReq += "<soap:Body>";
+            SOAPReq += "<" + action + "  xmlns=\"http://tempuri.org/\">";
+            SOAPReq += body;
+            SOAPReq += "</" + action + ">";
+            SOAPReq += "</soap:Body>";
+            SOAPReq += "</soap:Envelope>";
+
+            //Builds the connection to the WebService. 
+            //HttpWebRequest req = (HttpWebRequest)WebRequest.Create("http://sash.herts.ac.uk/cs/BRESocialAppService.asmx");
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create("http://localhost:3492/BRESocialAppService.asmx");
+            req.Method = "POST";
+            req.ContentType = "text/xml; charset=utf-8";
+            req.ContentLength = Encoding.UTF8.GetByteCount(SOAPReq);
+            req.Headers.Add("SOAPAction", "\"http://tempuri.org/" + action + "\"");
+
+
+            //Pass the SoapRequest String to the WebService
+            StreamWriter stmw = new StreamWriter(req.GetRequestStream());
+            stmw.Write(SOAPReq);
+            stmw.Flush();
+
+            WebResponse resp = req.GetResponse();
+            StreamReader r = new StreamReader(resp.GetResponseStream());
+
+            return r.ReadToEnd();
+
+
+
+        }
+    }
+}

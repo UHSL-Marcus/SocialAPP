@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <string>{"place_id":"ChIJ9VZBr5w8dkgRAf8Hw17MMg0","name":"Hatfield House","formatted_address":"Estate Office, Hatfield Park, Hatfield AL9 5NQ, United Kingdom","formatted_phone_number":"01707 287010","rating":6.1,"website":"http://www.hatfield-house.co.uk/","location":{"lat":51.760453,"lng":-0.20922799999993913},"categories":[{"categoryName":"Consum","subCategories":["food"]},{"categoryName":"Enviro Perf","subCategories":["park"]},{"categoryName":"Biodi","subCategories":["park"]}]}</string>
+  <string>{"place_id":"ChIJ-wrRrJo8dkgRhC7fwkgS-UY","name":"Bishop's Hatfield Girls' School","formatted_address":"Hatfield, Hertfordshire, United Kingdom","formatted_phone_number":"01707 275331","rating":5.0,"website":"http://www.bishophatfield.herts.sch.uk/","location":{"lat":51.758809,"lng":-0.22661800000003041},"categories":[{"categoryName":"Education","subCategories":["school"]},{"categoryName":"Govern","subCategories":["school"]}]}</string>
+</ArrayOfString>

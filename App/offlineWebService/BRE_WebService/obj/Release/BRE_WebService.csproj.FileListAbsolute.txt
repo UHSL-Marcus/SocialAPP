@@ -1,0 +1,23 @@
+C:\Users\Al\Dropbox\BRE\code\BRE_coverflow (With Touch)\BRE_WebService\bin\BRE_WebService.dll
+C:\Users\Al\Dropbox\BRE\code\BRE_coverflow (With Touch)\BRE_WebService\bin\BRE_WebService.pdb
+C:\Users\Al\Dropbox\BRE\code\BRE_coverflow (With Touch)\BRE_WebService\obj\Release\BRE_WebService.dll
+C:\Users\Al\Dropbox\BRE\code\BRE_coverflow (With Touch)\BRE_WebService\obj\Release\BRE_WebService.pdb
+C:\Users\Al\Dropbox\BRE\code\BRE_coverflow (With Touch)\BRE_WebService\obj\Release\BRE_WebService.csprojResolveAssemblyReference.cache
+C:\Users\Al\Dropbox\BRE\Code\_01-BRE_coverflow (With Touch) & (External WebService)\BRE_WebService\bin\BRE_WebService.dll
+C:\Users\Al\Dropbox\BRE\Code\_01-BRE_coverflow (With Touch) & (External WebService)\BRE_WebService\bin\BRE_WebService.pdb
+C:\Users\Al\Dropbox\BRE\Code\_01-BRE_coverflow (With Touch) & (External WebService)\BRE_WebService\obj\Release\BRE_WebService.dll
+C:\Users\Al\Dropbox\BRE\Code\_01-BRE_coverflow (With Touch) & (External WebService)\BRE_WebService\obj\Release\BRE_WebService.pdb
+C:\Users\Al\Dropbox\BRE\Code\_01-BRE_coverflow (With Touch) & (External WebService)\BRE_WebService\obj\Release\BRE_WebService.csprojResolveAssemblyReference.cache
+C:\Users\Emilio Mistretta\Dropbox\BRE\code\_01-BRE_coverflow (With Touch) & (External WebService)\BRE_WebService\bin\BRE_WebService.dll
+C:\Users\Emilio Mistretta\Dropbox\BRE\code\_01-BRE_coverflow (With Touch) & (External WebService)\BRE_WebService\bin\BRE_WebService.pdb
+C:\Users\Emilio Mistretta\Dropbox\BRE\code\_01-BRE_coverflow (With Touch) & (External WebService)\BRE_WebService\obj\Release\BRE_WebService.csprojResolveAssemblyReference.cache
+C:\Users\Emilio Mistretta\Dropbox\BRE\code\_01-BRE_coverflow (With Touch) & (External WebService)\BRE_WebService\obj\Release\BRE_WebService.dll
+C:\Users\Emilio Mistretta\Dropbox\BRE\code\_01-BRE_coverflow (With Touch) & (External WebService)\BRE_WebService\obj\Release\BRE_WebService.pdb
+C:\Users\Al\Dropbox\BRE\Code\_01-BRE_coverflow (With Touch) & (External WebService)\BRE_WebService\bin\BRE_WebService.dll.config
+C:\Users\Emilio Mistretta\Dropbox\BRE\code\_01-BRE_coverflow (With Touch) & (External WebService)\BRE_WebService\bin\BRE_WebService.dll.config
+C:\Users\Marcus\Dropbox\Work\BRE\code\_01-BRE_coverflow (With Touch) & (External WebService)\BRE_WebService\bin\BRE_WebService.dll.config
+C:\Users\Marcus\Dropbox\Work\BRE\code\_01-BRE_coverflow (With Touch) & (External WebService)\BRE_WebService\bin\BRE_WebService.dll
+C:\Users\Marcus\Dropbox\Work\BRE\code\_01-BRE_coverflow (With Touch) & (External WebService)\BRE_WebService\bin\BRE_WebService.pdb
+C:\Users\Marcus\Dropbox\Work\BRE\code\_01-BRE_coverflow (With Touch) & (External WebService)\BRE_WebService\obj\Release\BRE_WebService.csprojResolveAssemblyReference.cache
+C:\Users\Marcus\Dropbox\Work\BRE\code\_01-BRE_coverflow (With Touch) & (External WebService)\BRE_WebService\obj\Release\BRE_WebService.dll
+C:\Users\Marcus\Dropbox\Work\BRE\code\_01-BRE_coverflow (With Touch) & (External WebService)\BRE_WebService\obj\Release\BRE_WebService.pdb

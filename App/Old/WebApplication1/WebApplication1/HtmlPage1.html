@@ -1,0 +1,72 @@
+﻿<!--<div class="fill flex-container flex-column" style="background-color:yellow">
+                <div id="header" class="flex-container">
+                    <asp:button runat="server" id="homeBtn" Cssclass="btn btn-default" Text="Home" OnClick="homeBtn_Click" ClientIDMode="Static"></asp:button>
+                    <div class="flex-1"></div>
+                    <asp:button runat="server" id="signOutBtn" Cssclass="btn btn-default" Text="Sign Out" OnClick="signOutBtn_Click" ClientIDMode="Static"></asp:button>
+                </div>
+
+                <asp:updatepanel runat="server" id="MainContentUP" UpdateMode="Conditional" class="flex-1">
+                    <Triggers>
+                        <asp:AsyncPostBackTrigger ControlID="homeBtn" EventName="Click" />
+                        <asp:AsyncPostBackTrigger ControlID="signOutBtn" EventName="Click" />
+                    </Triggers>
+                    <ContentTemplate>
+                        <div runat="server" id="MenuButtons" style="vertical-align:middle">
+                            <asp:button runat="server" id="profileBtn" Cssclass="btn btn-default" Text="Profile" OnClick="profileBtn_Click"  ClientIDMode="Static" />
+                            <asp:button runat="server" ID="statsBtn" CssClass="btn btn-default" Text="Stats" OnClick="statsBtn_Click"  ClientIDMode="Static" />
+                            <asp:button runat="server" ID="mapsBtn" CssClass="btn btn-default" Text="Maps" OnClick="mapsBtn_Click"  ClientIDMode="Static" />
+                        </div>
+                        <asp:PlaceHolder ID="ContentPlaceholder" runat="server">
+                        </asp:PlaceHolder>
+
+                        <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h1 class="modal-title" id="loginModalLabel">Login</h1>
+                                    </div>
+                                    <div id="loginModalBody" class="modal-body">
+                                        <!-- Login
+                                        <div id="loginView" class="centre-form centering text-center">
+                                            <asp:Label ID="info" runat="server" Text="" />
+
+                                            <div class="form-group has-feedback">
+                                                <label for="userIn" class="control-label">Username</label>
+                                                <input type="text" runat="server" class="form-control" id="userIn" placeholder="Username" ClientIDMode="Static">
+                                                <span class="glyphicon glyphicon-ok form-control-feedback hidden"></span>
+                                                <span class="glyphicon glyphicon-remove form-control-feedback hidden"></span>
+                                            </div>
+                                            <div class="form-group has-feedback">
+                                                <label for="passwordIn" class="control-label">Password</label>
+                                                <input type="password" runat="server" class="form-control" id="passwordIn" placeholder="Password" ClientIDMode="Static"/>
+                                                <span class="glyphicon glyphicon-ok form-control-feedback hidden"></span>
+                                                <span class="glyphicon glyphicon-remove form-control-feedback hidden"></span>
+                                            </div>
+                                            <div class="flex-container">
+                                                <asp:Button runat="server" id="loginBtn" CssClass="btn btn-default" onclick="loginBtn_Click" text="Login" ClientIDMode="Static" />
+                                                <asp:Button runat="server" id="toggleCreate" CssClass="btn btn-default" OnClick="toggleCreate_Click" Text="Create New Account" ClientIDMode="Static"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ContentTemplate>
+                </asp:updatepanel>
+                <div id="footer">
+                    Words <br/> more word
+                </div>
+            </div>-->
+
+
+<div class="modal fade" id="loadingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="loadingModalBody" class="modal-body">
+                Loading...
+            </div>
+        </div>
+    </div>
+</div>
+
