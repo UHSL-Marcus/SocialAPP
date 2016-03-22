@@ -6,7 +6,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 
-namespace WebApplication1.Utils
+namespace SocialApp.Utils
 {
     public class HTTPRequest
     {

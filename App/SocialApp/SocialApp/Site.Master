@@ -23,8 +23,8 @@
     <asp:ContentPlaceHolder ID="StyleContent" runat="server" />
 
 </head>
-<body>
-    <form runat="server" class="background">
+<body class="background">
+    <form runat="server">
         <asp:ScriptManager runat="server">
             <Scripts>
                 <%--To learn more about bundling scripts in ScriptManager see http://go.microsoft.com/fwlink/?LinkID=301884 --%>
@@ -43,48 +43,46 @@
                 <asp:ScriptReference Name="Focus.js" Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
                 <asp:ScriptReference Name="WebFormsBundle" />
                <%--Site Scripts--%>
-                
+                <asp:ScriptReference Path="~/bundles/Scripts/Utils" />
                 <asp:ScriptReference Path="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjcLgEOEkdQfwxEyGOu4hHlSY_s-LOGkQ&libraries=places" />
             </Scripts>
         </asp:ScriptManager>
-        <!-- <asp:ScriptReference Path="~/bundles/Scripts/Utils" /> -->
+        <!--  -->
 
-        <div id="master_header" class="navbar-fixed-top">
-            <div class="container-fluid flex-container headerPadding">
-                 <div class="flex-container">
-                    <asp:ImageButton runat="server" ID="homeBtn" ImageUrl="/Resources/Icons/backArrow.png" CssClass="allowPointer headerBackBtn" ClientIDMode="Static" />
-                </div>
-                            
-                <div class="flex-1"></div>
+        <div class="overlay topLeftOverlay nonInteractive">
+            <asp:ImageButton runat="server" ID="homeBtn" ImageUrl="/Resources/Icons/backArrow.png" CssClass="allowPointer headerBackBtn" OnClick="homeBtn_Click" ClientIDMode="Static" />
+        </div>
 
+        <asp:UpdatePanel runat="server" ID="topRightHeaderUpdatePanel" UpdateMode="Conditional" class="overlay topRightOverlay nonInteractive">
+            <ContentTemplate>
                 <div class="flex-container flex-column">
                     <div class="flex-container flex-center">
-                        <asp:LinkButton runat="server" ID="userNameHeaderLbl" CssClass="nonAnimatedLink allowPointer" Text="Not Signed In" ClientIDMode="Static" ></asp:LinkButton>
-                        <asp:ImageButton runat="server" ID="headerProfileBtn" ImageUrl="/Resources/Icons/03-Profile.png" CssClass="allowPointer headerProfileBtn" ClientIDMode="Static" />
+                        <asp:LinkButton runat="server" ID="userNameHeaderLbl" CssClass="nonAnimatedLink allowPointer" Text="Not Signed In" OnClick="userNameHeaderLbl_headerProfileBtn_Click" ClientIDMode="Static" ></asp:LinkButton>
+                        <asp:ImageButton runat="server" ID="headerProfileBtn" ImageUrl="/Resources/Icons/03-Profile.png" CssClass="allowPointer headerProfileBtn" OnClick="userNameHeaderLbl_headerProfileBtn_Click"
+                             ClientIDMode="Static" />
                     </div>
                     <div class="flex-container">
                         <div class="flex-1"></div>
                         <div id="signoutBtnContainer" class="flex-container flex-center headerProfileWidth">
-                            <asp:LinkButton runat="server" ID="signOutBtn" Text="Sign Out" CssClass="nonAnimatedLink allowPointer" ClientIDMode="Static" ></asp:LinkButton>
-                        </div>
-                            
+                            <asp:LinkButton runat="server" ID="signOutBtn" Text="Sign Out" CssClass="nonAnimatedLink allowPointer" OnClick="signOutBtn_Click" ClientIDMode="Static" ></asp:LinkButton>
+                        </div>         
                     </div>
                 </div>
-            </div>
-        </div>
+            </ContentTemplate>
+        </asp:UpdatePanel>
+
         <div class="fill flex-container" id="MainContentHolder">
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
         </div>
-        <div id="master_footer" class="navbar-fixed-bottom">
-            <div class="container-fluid">
-                <p>&copy; <%: DateTime.Now.Year %> - BRE Social App</p>
-            <//div>
+        
+        <div class="overlay bottomLeftOverlay nonInteractive">
+            <p>&copy; <%: DateTime.Now.Year %> - BRE Social App</p>
         </div>
+
 
     </form>
 
-    <script type="text/javascript" src="/Scripts/Pages/Master.js"></script> 
     <asp:ContentPlaceHolder ID="ScriptContent" runat="server" />
 </body>
 </html>

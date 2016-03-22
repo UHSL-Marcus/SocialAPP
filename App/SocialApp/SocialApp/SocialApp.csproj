@@ -147,8 +147,9 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\Pages\Default.css" />
+    <Content Include="Content\Pages\Home.css" />
     <Content Include="Content\Pages\Master.css" />
+    <Content Include="Content\Pages\Profile.css" />
     <Content Include="Content\Site.css" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -189,6 +190,7 @@
     <Content Include="Content\themes\base\tooltip.css" />
     <Content Include="Content\Utils\Flex.css" />
     <Content Include="Content\Utils\Misc.css" />
+    <Content Include="Content\Utils\Positioning.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Pages\Maps.aspx" />
     <Content Include="Pages\Profile.aspx" />
@@ -210,10 +212,13 @@
     <Content Include="Scripts\jquery-ui-1.11.4.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\Pages\Create.js" />
-    <Content Include="Scripts\Pages\Default.js" />
+    <Content Include="Scripts\Pages\Create_old.js" />
+    <Content Include="Scripts\Pages\Home.js" />
+    <Content Include="Scripts\Pages\Default_old.js" />
     <Content Include="Scripts\Pages\Maps.js" />
     <Content Include="Scripts\Pages\Master.js" />
     <Content Include="Scripts\Pages\Profile.js" />
+    <Content Include="Scripts\Pages\Profile_old.js" />
     <Content Include="Scripts\Pages\Stats.js" />
     <Content Include="Scripts\Pages\StatsVisual.js" />
     <Content Include="Scripts\respond.js" />
@@ -249,7 +254,7 @@
     <Content Include="Scripts\WebForms\WebParts.js" />
     <Content Include="Scripts\WebForms\WebUIValidation.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Default.aspx" />
+    <Content Include="Pages\Home.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Site.Master" />
@@ -293,12 +298,12 @@
     <Compile Include="Contact.aspx.designer.cs">
       <DependentUpon>Contact.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Default.aspx.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
+    <Compile Include="Pages\Home.aspx.cs">
+      <DependentUpon>Home.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Default.aspx.designer.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
+    <Compile Include="Pages\Home.aspx.designer.cs">
+      <DependentUpon>Home.aspx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

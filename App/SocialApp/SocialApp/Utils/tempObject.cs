@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace WebApplication1.Utils
+namespace SocialApp.Utils
 {
     public class tempObject
     {

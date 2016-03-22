@@ -40,6 +40,15 @@ namespace SocialApp {
         protected global::System.Web.UI.WebControls.ImageButton homeBtn;
         
         /// <summary>
+        /// topRightHeaderUpdatePanel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel topRightHeaderUpdatePanel;
+        
+        /// <summary>
         /// userNameHeaderLbl control.
         /// </summary>
         /// <remarks>

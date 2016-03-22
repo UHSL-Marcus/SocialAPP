@@ -8,7 +8,7 @@ using System.Web;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace WebApplication1.Utils
+namespace SocialApp.Utils
 {
     public class XMLParse
     {

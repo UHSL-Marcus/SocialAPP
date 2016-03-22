@@ -1,13 +1,11 @@
-﻿html{
+﻿body, html {
+    height: 100%;
     min-height:600px;
     min-width:800px;
-    height:100%;
     overflow:hidden;
 }
-
-body {background-color:beige; height: 100%;}
+html {overflow:auto;}
 
 form {
   height: 100%;
-  background-color:aqua;
 }

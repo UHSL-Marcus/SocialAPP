@@ -1,3 +1,5 @@
 ﻿.fill {height:100%; width:100%;}
 
-.allowPointer {pointer-events:all}
+.allowPointer {pointer-events:all;}
+
+.nonInteractive {pointer-events: none;}

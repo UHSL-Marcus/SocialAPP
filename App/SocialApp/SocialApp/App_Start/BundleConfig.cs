@@ -19,12 +19,14 @@ namespace SocialApp
                            "~/Scripts/Utils/jstelnumbers.js",
                            "~/Scripts/Utils/jquery.canvasjs.min.js",
                            "~/Scripts/Utils/jsonStringify.js",
-                           "~/Scripts/Utils/headerHider.js"
+                           "~/Scripts/Utils/headerHider.js",
+                           "~/Scripts/Pages/Master.js"
                            ));
 
             bundles.Add(new StyleBundle("~/bundles/Content/Utils").Include(
                             "~/Content/Utils/Flex.css",
                             "~/Content/Utils/Misc.css",
+                            "~/Content/Utils/Positioning.css",
                             "~/Content/Pages/Master.css"
                             ));
 
