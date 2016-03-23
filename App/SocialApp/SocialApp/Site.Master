@@ -8,9 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%: Page.Title %> - BRE Social App</title>
 
-    
-    <asp:ContentPlaceHolder ID="HeaderContent" runat="server" />
-
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/bundles/modernizr") %>
         <%: Styles.Render("~/bundles/Content/Utils") %>
@@ -24,6 +21,9 @@
 
 </head>
 <body class="background">
+
+    <asp:ContentPlaceHolder ID="ScriptContent" runat="server" />
+
     <form runat="server">
         <asp:ScriptManager runat="server">
             <Scripts>
@@ -83,6 +83,6 @@
 
     </form>
 
-    <asp:ContentPlaceHolder ID="ScriptContent" runat="server" />
+    
 </body>
 </html>

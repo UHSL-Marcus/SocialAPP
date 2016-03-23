@@ -60,3 +60,9 @@ C:\Users\Marcus\Dropbox\Work\BRE\Marcus\Projects\offlineWebService\BRE_WebServic
 C:\Users\Marcus\Dropbox\Work\BRE\Marcus\Projects\offlineWebService\BRE_WebService\obj\Debug\BRE_WebService.csprojResolveAssemblyReference.cache
 C:\Users\Marcus\Dropbox\Work\BRE\Marcus\Projects\offlineWebService\BRE_WebService\obj\Debug\BRE_WebService.dll
 C:\Users\Marcus\Dropbox\Work\BRE\Marcus\Projects\offlineWebService\BRE_WebService\obj\Debug\BRE_WebService.pdb
+C:\Users\ML15AAF\Documents\GitHub\SocialAPP\App\offlineWebService\BRE_WebService\bin\BRE_WebService.dll.config
+C:\Users\ML15AAF\Documents\GitHub\SocialAPP\App\offlineWebService\BRE_WebService\bin\BRE_WebService.dll
+C:\Users\ML15AAF\Documents\GitHub\SocialAPP\App\offlineWebService\BRE_WebService\bin\BRE_WebService.pdb
+C:\Users\ML15AAF\Documents\GitHub\SocialAPP\App\offlineWebService\BRE_WebService\obj\Debug\BRE_WebService.csprojResolveAssemblyReference.cache
+C:\Users\ML15AAF\Documents\GitHub\SocialAPP\App\offlineWebService\BRE_WebService\obj\Debug\BRE_WebService.dll
+C:\Users\ML15AAF\Documents\GitHub\SocialAPP\App\offlineWebService\BRE_WebService\obj\Debug\BRE_WebService.pdb

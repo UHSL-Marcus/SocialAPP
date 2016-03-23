@@ -32,7 +32,7 @@ namespace SocialApp
                     Console.WriteLine("Home Page");
                 }
             }
-            //topRightHeaderUpdatePanel.Update();
+            topRightHeaderUpdatePanel.Update();
         }
 
         public void setChild(Page page)

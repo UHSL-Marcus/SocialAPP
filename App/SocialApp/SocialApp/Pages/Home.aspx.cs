@@ -17,6 +17,8 @@ namespace SocialApp.Pages
         {
             String t = "showLogin();";
             ScriptManager.RegisterStartupScript(homeUpdatePanel, homeUpdatePanel.GetType(), "ShowLogin" + UniqueID, t, true);
+            t = "wireUp_LoginEvents();";
+            ScriptManager.RegisterStartupScript(homeUpdatePanel, homeUpdatePanel.GetType(), "WireuUpLogin" + UniqueID, t, true);
         }
 
         private bool loginCheck()
@@ -34,7 +36,7 @@ namespace SocialApp.Pages
         {
             if (loginCheck())
             {
-
+                Response.Redirect(Paths.PAGE_PROFILE);
             }
         }
 
@@ -42,7 +44,7 @@ namespace SocialApp.Pages
         {
             if (loginCheck())
             {
-
+                Response.Redirect(Paths.PAGE_STATS);
             }
         }
 
@@ -50,7 +52,7 @@ namespace SocialApp.Pages
         {
             if (loginCheck())
             {
-
+                Response.Redirect(Paths.PAGE_MAPS);
             }
         }
 
