@@ -41,3 +41,10 @@ function fillDays(eID) {
 function daysInMonth(month, year) {
     return new Date(year, month, 0).getDate();
 }
+
+// change the set day item based on the hidden paired input (hidden input is used in the code behind)
+function changeDay(dropdown, hidden) {
+    fillDays($(dropdown));
+    if ($(hidden).val() < $(dropdown).length)
+        $(dropdown).val($(hidden).val());
+}

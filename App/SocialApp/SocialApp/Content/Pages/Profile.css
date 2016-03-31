@@ -1,15 +1,5 @@
-﻿.background {background-color: #1ba1e2;}
+﻿
 
-
-/***********Common Classes*********************/
-.content-padding {padding:2.5%;}
-
-.form {margin-right:5px; margin-left:auto; padding-right:3%;}
-.form-label {margin-right:0.8%}
-.slider {width:50%;}
-.slider-label {margin-right:1%;}
-
-/**********Profile View Classes*****************/
 .profile-text-box {width:50%;}
 .profile-gender {width:25%; margin-right:25%;}
 .profile-date {width:16.7%;}
@@ -17,13 +7,5 @@
 .profile-box {width: 46.6%; /*max-width: 560px;*/ max-height:80%; padding-top: 0.8%; padding-left: 0.8%; padding-right: 0.8%;}
 #lifestyle {height:80%;}
 
-/**********Create View classes*****************/
-.create-centre {width:85%;}
-.create-form {width: 50%;}
-.create-form-inner{padding-right:30%; margin:0;}
-.create-text-box {width:50%;}
-.create-gender {width: 40%; margin-right: 10%;}
-.create-date {width:16.7%;}
-.create-lifestyle {width: 49%;}
-.create-lifetyle-form {width: 95%;}
+
 

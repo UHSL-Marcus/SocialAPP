@@ -76,5 +76,31 @@ namespace SocialApp.Utils
 
             }
         }
+
+        public static void setDateDropdown(DropDownList sMonth, DropDownList sYear, int month = 0, int year = 0)
+        {
+            //Fill Years
+            sYear.Items.Clear();
+            sYear.Items.Add("");
+            for (int i = DateTime.Now.Year - 100; i <= DateTime.Now.Year; i++)
+            {
+                sYear.Items.Add(i.ToString()); //CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(8)
+            }
+            string y = "";
+            if (year != 0) y = year.ToString();
+            sYear.Items.FindByValue(y).Selected = true;
+
+
+            //Fill Months
+            sMonth.Items.Clear();
+            sMonth.Items.Add("");
+            for (int i = 1; i <= 12; i++)
+            {
+                sMonth.Items.Add(CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(i));
+            }
+            string m = "";
+            if (month != 0) m = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(month);
+            sMonth.Items.FindByValue(m).Selected = true;
+        }
     }
 }

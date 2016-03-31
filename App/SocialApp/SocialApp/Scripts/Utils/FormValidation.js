@@ -4,7 +4,7 @@ function validateAll(div) {
 
     $('#' + div).find(".tab-pane").each(function () {
         $(this).find(".form-group").each(function () {
-            $(this).children(".form-control").trigger("change");
+            $(this).children(".form-control").trigger("blur");
         });
     });
 }

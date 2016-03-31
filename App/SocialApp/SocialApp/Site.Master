@@ -22,7 +22,7 @@
 </head>
 <body class="background">
 
-    <asp:ContentPlaceHolder ID="ScriptContent" runat="server" />
+    
 
     <form runat="server">
         <asp:ScriptManager runat="server">
@@ -48,6 +48,8 @@
             </Scripts>
         </asp:ScriptManager>
         <!--  -->
+
+        <asp:ContentPlaceHolder ID="ScriptContent" runat="server" />
 
         <div class="overlay topLeftOverlay nonInteractive">
             <asp:ImageButton runat="server" ID="homeBtn" ImageUrl="/Resources/Icons/backArrow.png" CssClass="allowPointer headerBackBtn" OnClick="homeBtn_Click" ClientIDMode="Static" />
