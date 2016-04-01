@@ -15,7 +15,10 @@ var radius;
 
 
 function loadMap(lat, lng, home) {
-    $("#map-canvas").ready(function () {
+    alert("loaded");
+    $("#map_canvas").ready(function () {
+
+        alert("ready");
 
         
         directionsService = new google.maps.DirectionsService();
@@ -28,7 +31,7 @@ function loadMap(lat, lng, home) {
             },
         };
 
-        map = new google.maps.Map(document.getElementById('map-canvas'),
+        map = new google.maps.Map(document.getElementById('map_canvas'),
             mapOptions);
 
         setDirectionRenderer();

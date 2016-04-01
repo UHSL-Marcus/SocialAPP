@@ -1,0 +1,16 @@
+﻿.mouseoverOverlayShowDiv{
+    position: absolute; 
+    height:5px;
+    z-index:100;
+    background-color:red;
+}
+.mouseoverHeaderHideDiv {
+    width:100vw;
+    position: absolute;
+    z-index:80;
+    bottom:0;
+    top:0;
+    opacity: 0.3;
+    background-color:dimgrey;
+    display:none;
+}

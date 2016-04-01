@@ -20,6 +20,7 @@ namespace SocialApp
                            "~/Scripts/Utils/jquery.canvasjs.min.js",
                            "~/Scripts/Utils/jsonStringify.js",
                            "~/Scripts/Utils/headerHider.js",
+                           "~/Scripts/Utils/Misc.js",
                            "~/Scripts/Pages/Master.js"
                            ));
 
@@ -27,6 +28,7 @@ namespace SocialApp
                             "~/Content/Utils/Flex.css",
                             "~/Content/Utils/Misc.css",
                             "~/Content/Utils/Positioning.css",
+                            "~/Content/Utils/HideHeader.css",
                             "~/Content/Pages/Master.css"
                             ));
 

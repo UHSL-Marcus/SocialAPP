@@ -1,4 +1,8 @@
 ﻿
+$(document).ready(function () {
+    setMouseoverSizes();
+});
+
 function adjustForHeaderAndFooter() {
     var navHeight = $('#master_header').css('height');
     var footerHeight = $('#master_footer').css('height');

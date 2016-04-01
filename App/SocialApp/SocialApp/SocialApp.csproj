@@ -191,6 +191,7 @@
     <Content Include="Content\themes\base\theme.css" />
     <Content Include="Content\themes\base\tooltip.css" />
     <Content Include="Content\Utils\Flex.css" />
+    <Content Include="Content\Utils\HideHeader.css" />
     <Content Include="Content\Utils\Misc.css" />
     <Content Include="Content\Utils\Positioning.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -235,6 +236,7 @@
     <Content Include="Scripts\Utils\jsonStringify.js" />
     <Content Include="Scripts\Utils\jspostcode.js" />
     <Content Include="Scripts\Utils\jstelnumbers.js" />
+    <Content Include="Scripts\Utils\Misc.js" />
     <Content Include="Scripts\WebForms\DetailsView.js" />
     <Content Include="Scripts\WebForms\Focus.js" />
     <Content Include="Scripts\WebForms\GridView.js" />

@@ -4,3 +4,26 @@
 
 .left-align {float:left;}
 .right-align {float:right;}
+
+.overlay {
+    position:absolute;
+    margin:0.5%;
+    z-index:100;
+}
+.topRightOverlay {
+    top:0;
+    right:0;
+}
+.topLeftOverlay {
+    top:0;
+    left:0;
+}
+.bottomRightOverlay {
+    bottom:0;
+    right:0;
+}
+.bottomLeftOverlay {
+    bottom:0;
+    left:0;
+}
+

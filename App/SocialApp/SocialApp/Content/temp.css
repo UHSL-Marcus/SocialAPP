@@ -119,7 +119,7 @@ a.nonAnimatedLink:hover {text-decoration:none; }
     z-index:100;
     pointer-events: none;
 }
-#mouseoverHeaderDiv{
+#mouseoverOverlayShowDiv{
     position: absolute;
     width:100vw;
     height:5px;

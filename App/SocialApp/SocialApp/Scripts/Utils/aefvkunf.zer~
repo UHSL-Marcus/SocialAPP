@@ -31,7 +31,7 @@ function hideHeader(hide)
 function wireup_mouseoverEvent()
 {
     $('#header').off();
-    $('#mouseoverHeaderDiv').mouseover(function () {
+    $('#mouseoverOverlayShowDiv').mouseover(function () {
         alert("mouseover");
         if (hideMode) hideHeader(false);
     })
@@ -40,7 +40,7 @@ function wireup_mouseoverEvent()
 
 function wireup_mouseoutEvent()
 {
-    $('#mouseoverHeaderDiv').off();
+    $('#mouseoverOverlayShowDiv').off();
 
     $('#header').mouseout(function () {
         alert("mouseout");

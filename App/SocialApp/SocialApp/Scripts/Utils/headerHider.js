@@ -2,51 +2,62 @@
 
 hideMode = false;
 
+function setMouseoverSizes() {
+    $(".overlay").each(function (index) {
+        var classes = getElementClassArray($(this));
+        var width = $(this).outerWidth(true);
+        
+        $.each(classes, function (index, item) {
+            $(".mouseoverOverlayShowDiv." + item).width(width); //todo: this isn't resetting
+        });
+    });
+}
+
 function setHeaderHidden(hide)
-{
-    if (hide) modeSwitch(false);
-    else modeSwitch(true);
+{ 
     hideHeader(hide);
     hideMode = hide;
 }
 
-function modeSwitch(overlay)
-{
-    if (overlay) $('.headerFixed').removeClass("headerFixed").addClass("headerOverlay"); 
-    else $('.headerOverlay').removeClass("headerOverlay").addClass("headerFixed");
-}
 
-function hideHeader(hide)
+function hideHeader(hide, position)
 {
     if (hide) {
-        $(".headerFixed").hide();
-        $('#mouseoverHeaderDiv').show();
-        $('#mouseoverHeaderHideDiv').hide();
+        $(".overlay").hide();
+        $('.mouseoverHeaderHideDiv').hide();
+        $(".mouseoverOverlayShowDiv." + position).height(5);
         
     }
     else {
-        $(".headerFixed").show();
-        $('#mouseoverHeaderDiv').hide();
-        $('#mouseoverHeaderHideDiv').show();
-        $('#mouseoverHeaderHideDiv').css("top", Math.ceil($('.headerFixed').height())+"px");
+        $(".overlay." + position).show();
+        $('.mouseoverHeaderHideDiv').show();
+        
+        $(".mouseoverOverlayShowDiv." + position).height(
+            $(".overlay." + position).outerHeight(true));
+
     }
 }
 
 function wireup_mouseoverEvent()
 {
+    alert("wireup");
     //$('#mouseoverHeaderHideDiv').off();
-    $('#mouseoverHeaderDiv').mouseover(function () {
-        if (hideMode) hideHeader(false);
+    $('.mouseoverOverlayShowDiv').mouseover(function () {
+        var classes = getElementClassArray($(this));
+        $.each(classes, function (index, item) {
+            if (hideMode) hideHeader(false, item);
+        });
+        
     })
 
-    $('#mouseoverHeaderHideDiv').mouseover(function () {
-        if (hideMode) hideHeader(true);
+    $('.mouseoverHeaderHideDiv').mouseover(function () {
+        if (hideMode) hideHeader(true, "");
     })
 }
 
 function wireup_mouseoutEvent()
 {
-    $('#mouseoverHeaderDiv').off();
+    $('.mouseoverOverlayShowDiv').off();
 
     
 }
