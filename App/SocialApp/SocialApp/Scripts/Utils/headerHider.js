@@ -8,7 +8,7 @@ function setMouseoverSizes() {
         var width = $(this).outerWidth(true);
         
         $.each(classes, function (index, item) {
-            $(".mouseoverOverlayShowDiv." + item).width(width); //todo: this isn't resetting
+            $(".mouseoverOverlayShowDiv." + item).width(width); 
         });
     });
 }
@@ -25,8 +25,7 @@ function hideHeader(hide, position)
     if (hide) {
         $(".overlay").hide();
         $('.mouseoverHeaderHideDiv').hide();
-        $(".mouseoverOverlayShowDiv." + position).height(5);
-        
+        $(".mouseoverOverlayShowDiv").height(5);
     }
     else {
         $(".overlay." + position).show();

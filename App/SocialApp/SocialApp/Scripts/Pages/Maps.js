@@ -15,7 +15,7 @@ var radius;
 
 
 function loadMap(lat, lng, home) {
-    alert("loaded");
+    alert("map");
     $("#map_canvas").ready(function () {
 
         alert("ready");
@@ -45,10 +45,10 @@ function loadMap(lat, lng, home) {
                 map: map,
                 title: "Home"
             });
-            $('#mapRadiusInput').val(lat + "," + lng);
-
-            
+            $('#mapRadiusInput').val(lat + "," + lng);  
         }
+
+        loadOverlay();
     });
 }
 
@@ -83,17 +83,22 @@ function setDirectionRenderer()
     }
 }*/
 
-function loadOverlay(services, categories, subcategories) {
-
+function setOverlayInfo(services, categories, subcategories) {
+    alert("settings");
     if (services) allServices = services;
     if (categories) allCategories = categories;
     if (subcategories) allSubCategories = subcategories;
-
 
     $.each(allServices, function (index, value) {
         allServices[index] = JSONstring.toObject(value);
     });
 
+    if (map) loadOverlay();
+}
+
+function loadOverlay() {
+    alert("overlay");
+    
     map.controls[google.maps.ControlPosition.TOP_LEFT].clear();
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(document.getElementById("control"));
 
@@ -143,6 +148,8 @@ function loadOverlay(services, categories, subcategories) {
 
                 directionsDisplay.setDirections(response);                      // show the route on the map
 
+                
+
                 $.each(allServices, function (index, value) {                   // for each service in this town
 
                     var found = false;
@@ -167,8 +174,9 @@ function loadOverlay(services, categories, subcategories) {
                                             if (distanceBetweenPoints(pathPoint, servLoc) <= 200) {     // if service is within 200 meters
 
                                                 addServiceMarker(value, routeMarkers);                  // show a marker
+                                                addServiceToReport(value);                              // Add service to the route report
                                                
-                                                found = true;                                           // service is along the route, break everything
+                                                found = true;                                           // service is along the route, break
                                                 break;
                                             }
 
@@ -183,9 +191,17 @@ function loadOverlay(services, categories, subcategories) {
                         if (found) break;
                     }
                 })
+
+                // show the report modal
+                $('#routeReportModal').modal();
+                $("#mapsRouteReport").removeAttr("disabled");
             }
             else alert("Directions failed: " + status);
         });
+    });
+
+    $("#mapsRouteReport").click(function () {
+        $('#routeReportModal').modal();
     });
 
     $('#mapsClearRoute').click(function () {
@@ -228,7 +244,8 @@ function clearRoute()
 {
     routeMarkers = clearMarkerCollection(routeMarkers);
     setDirectionRenderer();                                         // reset the direction renderer
-
+    $('#routeReportModalBody').html("");
+    $('#mapsRouteReport').attr("disabled", "disabled");
 }
 
 function clearMarkerCollection(collection)
@@ -453,4 +470,30 @@ function findNewLatLng(oriLoc, latDist, lngDist, north, east) {
             newLng = (oriLoc.lng() - dLng).toPrecision(9);
     }
     return new google.maps.LatLng(newLat, newLng);
+}
+
+
+function addServiceToReport(service) {
+
+    var content = "<div>" +
+                        "<button class=\"btn btn-default\" type=\"button\" data-toggle=\"collapse\" data-target=\"#" + service.Name.replace(/\W/g, '') + "CollapseInfo\">" + service.Name + "</button>" +
+                        "<div class=\"collapse\" id=\"" + service.Name.replace(/\W/g, '') + "CollapseInfo\">" +
+                            "<h3>" + service.Name + "</h3>" +
+                            "<h4>Rating</h4>" + service.Rating + "/10";
+
+                                var virt = service.VirtualServices;
+                                if (service.HasVirtualServices.toLowerCase() == "true") {
+                                    content += "<h4>Website</h4>";
+                                    if (typeof (virt.string) != "string") {
+
+                                        for (i = 0; i < virt.string.length; i++)
+                                            content += virt.string[i] + "</br>";
+                                    } else
+                                        content += virt.string + "</br>";
+                                }
+        content +=      "</div>" +
+                    "</div>";
+
+        $("#routeReportModalBody").append(content);
+
 }

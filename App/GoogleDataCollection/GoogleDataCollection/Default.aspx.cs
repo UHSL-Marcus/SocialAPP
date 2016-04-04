@@ -4,18 +4,13 @@ using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Xml;
 using System.Xml.Linq;
-using System.Xml.Serialization;
 
 namespace GoogleDataCollection
 {
@@ -122,7 +117,7 @@ namespace GoogleDataCollection
                 string typesFilename = "initial_categorisation.txt";
                 string typesPath = Path.Combine(folderPath, typesFilename);
 
-                String[] categoriesAndTypes = Regex.Replace(File.ReadAllText(typesPath, System.Text.Encoding.ASCII), @"\t|\n|\r", "").Split(new Char[] { ';' });
+                string[] categoriesAndTypes = Regex.Replace(File.ReadAllText(typesPath, System.Text.Encoding.ASCII), @"\t|\n|\r", "").Split(new Char[] { ';' });
 
                 ArrayList splitTypes = new ArrayList();
 
@@ -273,9 +268,9 @@ namespace GoogleDataCollection
 
                 TempError += "creating subcategory/service pairs\n"; 
 
-                foreach (String id in subcatIDs) 
+                foreach (string id in subcatIDs) 
                 {
-                    String SOAPbdy = @" <pair>
+                    string SOAPbdy = @" <pair>
                                             <ServiceID>" + serviceID + @"</ServiceID>
                                             <SubCategoryID>" + id + @"</SubCategoryID>
                                         </pair>";
@@ -292,11 +287,11 @@ namespace GoogleDataCollection
                 ErrorString += TempError + "\nException:\n";
                 ErrorString += ex.ToString();
             }
-            
+
 
             //errorText.Value += ErrorString;
-    
-            System.IO.StreamWriter objWriter = new System.IO.StreamWriter("c:\\report.txt", true);
+
+            StreamWriter objWriter = new StreamWriter("c:\\report.txt", true);
 
             // write a line of text to the file
             objWriter.WriteLine(ErrorString);

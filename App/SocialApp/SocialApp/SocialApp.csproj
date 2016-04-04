@@ -152,6 +152,7 @@
     <Content Include="Content\Pages\Home.css" />
     <Content Include="Content\Pages\Master.css" />
     <Content Include="Content\Pages\Profile.css" />
+    <Content Include="Content\Pages\Stats.css" />
     <Content Include="Content\Site.css" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

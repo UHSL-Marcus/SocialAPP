@@ -69,6 +69,7 @@ namespace SocialApp.Pages
             if (uID > 0 || true)
             {
                 Session[Paths.USERDETAILS] = response;
+                Session[Paths.USERGEOLOC] = HTTPRequest.getGoogleGeoLocation(response);
                 thisMaster.signedInCheck();
             }
             else

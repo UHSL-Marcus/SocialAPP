@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Web.UI;
 using System.Xml.Serialization;
 
@@ -13,15 +14,18 @@ namespace SocialApp.Pages
 {
     public partial class Maps : System.Web.UI.Page
     {
+        private SiteMaster thisMaster;
         protected void Page_Load(object sender, EventArgs e)
         {
-            fillTownList();
+            thisMaster = Master as SiteMaster;
+            thisMaster.setChild(this);
 
-            ScriptManager.RegisterStartupScript(mapMainUpdatePanel, mapMainUpdatePanel.GetType(), "headerHidden" + UniqueID, @"setHeaderHidden(true);", true);
-            ScriptManager.RegisterStartupScript(mapMainUpdatePanel, mapMainUpdatePanel.GetType(), "headerHiddenEvents" + UniqueID, @"wireup_mouseoverEvent();", true);
-            //TODO: give header the correct classes
+            thisMaster.headersHidden();
 
-            mapMainUpdatePanel.Update();
+            if (!IsPostBack)
+                fillTownList();
+
+            //mapMainUpdatePanel.Update();
 
         }
 
@@ -59,18 +63,8 @@ namespace SocialApp.Pages
 
             if (town.Equals("Home"))
             {
-                XMLParse user = new XMLParse((String)Session[Paths.USERDETAILS], SOAPRequest.soapNamespace);    // setup the logged in user data for parsing
-                String url = "https://maps.googleapis.com/maps/api/geocode/xml?address=";                       // build the google geocode webrequest
-                url += user.getElementText("HouseNumberName");
-                url += "+" + user.getElementText("Address");
-                url += "+" + user.getElementText("Town");
-                url += "+" + user.getElementText("Postcode");
-                url += "+UK";
-
-                HttpWebRequest AddressReq = (HttpWebRequest)WebRequest.Create(url);                             // send it
-                WebResponse resp = AddressReq.GetResponse();
-                StreamReader r = new StreamReader(resp.GetResponseStream());
-                XMLParse geoLoc = new XMLParse(r.ReadToEnd());                                                  // the recieved info for parsing
+               
+                XMLParse geoLoc = new XMLParse((string) Session[Paths.USERGEOLOC]);
 
                 lat = geoLoc.getElementText("lat", "location");                                                 // pull out lat and lng
                 lng = geoLoc.getElementText("lng", "location");
@@ -89,7 +83,7 @@ namespace SocialApp.Pages
 
             // TODO: move map rather than reload each time - didn't seem to work
             //ScriptManager.RegisterStartupScript(this, this.GetType(), "map" + UniqueID, "setMapView(" + lat + "," + lng + "," + home + ");", true); // javascript function to move the map view
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "map" + UniqueID, "loadMap(" + lat + "," + lng + "," + home + ");", true);
+            ScriptManager.RegisterStartupScript(this, GetType(), "map" + UniqueID, "loadMap(" + lat + "," + lng + "," + home + ");", true);    
 
             // pulling service info from the database
 
@@ -182,19 +176,27 @@ namespace SocialApp.Pages
                         allServices.Add(serviceID, serviceParse.convertToJSON());                                                       // add the entry to the services dictionary
                 }
 
-                String allServicesJSON = JsonConvert.SerializeObject(allServices);                                                      // convert all dictionaries to JSON Strings
-                String allCategoriesJSON = JsonConvert.SerializeObject(allCategories);
-                String allSubCategoriesJSON = JsonConvert.SerializeObject(allSubCategories);
+                string allServicesJSON = JsonConvert.SerializeObject(allServices);                                                      // convert all dictionaries to JSON Strings
+                string allCategoriesJSON = JsonConvert.SerializeObject(allCategories);
+                string allSubCategoriesJSON = JsonConvert.SerializeObject(allSubCategories);
 
                 // Javascript function to load the overlay, takes the above generated info. 
-                ScriptManager.RegisterStartupScript(mapMainUpdatePanel, mapMainUpdatePanel.GetType(), "Services" + UniqueID, "loadOverlay(" + allServicesJSON + "," + allCategoriesJSON + "," + allSubCategoriesJSON + ");", true);
-
+                ScriptManager.RegisterStartupScript(mapInputUpdatePanel, mapInputUpdatePanel.GetType(), "Services" + UniqueID, "setOverlayInfo(" + allServicesJSON + "," + allCategoriesJSON + "," + allSubCategoriesJSON + ");", true);
             }
         }
         protected void mapsTownList_SelectedIndexChanged(object sender, EventArgs e)
         {
             loadTownInfo(mapsTownList.SelectedValue);
         }
+
+
+        public void getRouteReportInfo()
+        {
+            //JsonConvert.
+        }
+
+
+
 
         public ArrayList tempResponse()
         {

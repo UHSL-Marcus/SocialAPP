@@ -9,6 +9,7 @@ namespace SocialApp.Utils
     {
         /************************SESSION CONSTS*************************/
         public const String USERDETAILS = "userDetails";
+        public const String USERGEOLOC = "userGeoLoc"; 
 
         /************************ PAGE CONSTS***************************/
         public const String PAGEADDR_BASE = "~/Pages/";

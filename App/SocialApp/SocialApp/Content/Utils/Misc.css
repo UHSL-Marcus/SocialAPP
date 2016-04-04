@@ -3,3 +3,7 @@
 .allowPointer {pointer-events:all;}
 
 .nonInteractive {pointer-events: none;}
+
+input:disabled {
+    color:gray
+}

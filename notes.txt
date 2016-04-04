@@ -1,0 +1,14 @@
+quantity of services / distance radius. 
+
+rate quantiy and distance not google ratings (distance might be tricky, done quantity)
+ 
+report after each search -- What was missed/how "bad" that was based on their profile 
+
+Some services have no defining type on google (just "establishment") will need to manually give them categories and sub categories
+
+route rating: 
+
+missed services:
+
+
+

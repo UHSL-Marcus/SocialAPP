@@ -39,6 +39,10 @@ namespace SocialApp
         {
             currentChild = page;
         }
+        public void headersHidden()
+        {
+            ScriptManager.RegisterStartupScript(this, GetType(), "headerHidden" + UniqueID, @"setHeaderHidden(true);wireup_mouseoverEvent();", true);
+        }
 
         protected void userNameHeaderLbl_headerProfileBtn_Click(object sender, EventArgs e)
         {

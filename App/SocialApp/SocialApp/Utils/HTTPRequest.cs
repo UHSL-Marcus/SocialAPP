@@ -49,5 +49,20 @@ namespace SocialApp.Utils
             
 
         }
+        public static string getGoogleGeoLocation(string userXML)
+        {
+            XMLParse user = new XMLParse(userXML, SOAPRequest.soapNamespace);
+            string url = "https://maps.googleapis.com/maps/api/geocode/xml?address=";                       // build the google geocode webrequest
+            url += user.getElementText("HouseNumberName");
+            url += "+" + user.getElementText("Address");
+            url += "+" + user.getElementText("Town");
+            url += "+" + user.getElementText("Postcode");
+            url += "+UK";
+
+            HttpWebRequest AddressReq = (HttpWebRequest)WebRequest.Create(url);                             // send it
+            WebResponse resp = AddressReq.GetResponse();
+            StreamReader r = new StreamReader(resp.GetResponseStream());
+            return r.ReadToEnd();
+        }
     }
 }
