@@ -178,7 +178,7 @@ function getnearby(location, townName, direction) {
             if (!cancelProcessing) {
                 //all done
                 requestCount = 0;
-                $('#TownData').val(JSONstring.make(townToScan));                            // to indentify this town
+                $('#TownData').val(JSON.stringify(townToScan));                            // to indentify this town
 
                 for (var i = 0; i < searchMarkers.length; i++) {                            // remove all the search area markers
                     searchMarkers[i].setMap(null);
@@ -277,7 +277,7 @@ function runDetailQueue() {
         log("requestData: " + tempResult);
         log(waitTime + " " + searchResults.length + " remaining");
 
-        //if (requestCount < 3)
+        //if (requestCount < 10)
         if (searchResults.length > 0)
             setTimeout(runDetailQueue, waitTime);
         else queueRunning = false;
@@ -309,6 +309,8 @@ function detailsRequest(service) {
                // waitTime -= 50;
             }
 
+            
+
             var locality = findAddressComponent(place.address_components, "locality");              // simplify these lines
             var postalTown = findAddressComponent(place.address_components, "postal_town");
             var testLocality = findAddressComponent(townToScan.address_components, "locality");
@@ -330,9 +332,9 @@ function detailsRequest(service) {
                         serviceTypes.push(place.types[i]);
                 }
 
-
                 JSONstring.compactOutput = true;
-                serviceDetails.push(JSONstring.make(place));                                        // stringify (serialize) the object into a JSON string
+                serviceDetails.push(JSON.stringify(place));
+                //serviceDetails.push(JSONstring.make(place));                                        // stringify (serialize) the object into a JSON string
             }
 
             service.marker.setMap(null);                                                            // remove the marker placed in the initial search

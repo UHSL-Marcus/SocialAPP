@@ -50,7 +50,9 @@ namespace GoogleDataCollection
                 serviceToStore.formatted_address = rawServiceOb.formatted_address;
                 serviceToStore.formatted_phone_number = rawServiceOb.formatted_phone_number;
                 serviceToStore.website = rawServiceOb.website;
-                serviceToStore.location = new latLng(rawServiceOb.geometry.location.G, rawServiceOb.geometry.location.K);
+                //serviceToStore.location = new latLng(rawServiceOb.geometry.location.G, rawServiceOb.geometry.location.K);
+                serviceToStore.location = new latLng(rawServiceOb.geometry.location.lat, rawServiceOb.geometry.location.lng);
+                //serviceToStore.location = new latLng(rawServiceOb.geometry.access_points[0].location.lat, rawServiceOb.geometry.access_points[0].location.lat);
 
                 TempError += "Primitive data set\n";
 
@@ -206,7 +208,7 @@ namespace GoogleDataCollection
 
                 TempError += "Sending service set soap request\n";
 
-                String response = HttpSOAPRequest(soapBody.Replace("'", "''"), action);
+                string response = HttpSOAPRequest(soapBody.Replace("'", "''"), action);
 
                 TempError += "Response: " + response + "\n";
 
@@ -226,7 +228,7 @@ namespace GoogleDataCollection
 
 
                 TempError += "Adding new subcategory IDs\n";
-                foreach (KeyValuePair<String, ArrayList> cat in tempcategory)
+                foreach (KeyValuePair<string, ArrayList> cat in tempcategory)
                 {
                     foreach (String subcat in cat.Value)
                     {
@@ -318,8 +320,10 @@ namespace GoogleDataCollection
 
             string townName = "";
             string county = "";
-            string lat = town.geometry.location.G;
-            string lng = town.geometry.location.K;
+            //string lat = town.geometry.location.G;
+            //string lng = town.geometry.location.K;
+            string lat = town.geometry.location.lat;
+            string lng = town.geometry.location.lng;
             foreach (address_componets com in town.address_components)
             {
                 if (arrayListContainsCaseInsensitve(new ArrayList(com.types), "locality"))
@@ -339,8 +343,10 @@ namespace GoogleDataCollection
             {
                 String soapBody = "<Town>" + new XElement("TownID", "-1") + 
                     new XElement("Town", townName) + new XElement("County", county) +
-                    new XElement("Latitude", town.geometry.location.G) + 
-                    new XElement("Longitude", town.geometry.location.K) +
+                    //new XElement("Latitude", town.geometry.location.G) + 
+                    //new XElement("Longitude", town.geometry.location.K) +
+                    new XElement("Latitude", town.geometry.location.lat) +
+                    new XElement("Longitude", town.geometry.location.lng) +
                     "</Town>";
 
                 HttpSOAPRequest(soapBody, "SetNewTown");

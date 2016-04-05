@@ -302,6 +302,10 @@ function subCatMarkers(subcat, clear) {
 
 function addServiceMarker(service, array)
 {
+    var str = JSON.stringify(service, null, 4);
+    alert(str);
+
+
     if (array["" + service.ServiceID] == null) {
 
         var servMarker = new google.maps.Marker({

@@ -687,6 +687,8 @@ namespace BRE_WebService
         [WebMethod]
         public int SetNewService(TownServices Service)
         {
+
+            string.Join(",", Service.VirtualServices);
             int returnID = -1;
 
             //if (CheckIfTownExists(Service.TownID))
@@ -701,7 +703,7 @@ namespace BRE_WebService
                 Service.HasPerimeter + "','" +
                 Service.Perimeter + "','" +
                 Service.HasVirtualServices + "','" +
-                String.Join(",", Service.VirtualServices) + "');" +
+                string.Join(",", Service.VirtualServices) + "');" +
                 "SELECT ServiceID FROM Town_Services WHERE ServiceID = SCOPE_IDENTITY();", sqlcon);
 
             SqlDataReader sr = com.ExecuteReader();
@@ -848,10 +850,23 @@ namespace BRE_WebService
         [WebMethod]
         public bool UpdateTownServices(TownServices Service)
         {
+
             bool UploadSuccess = false;
 
+            string query = "UPDATE Town_Services SET Name='" + Service.Name +
+                "', TownID='" + Service.TownID +
+                "', Rating='" + Service.Rating +
+                "', Latitude='" + Service.Latitude +
+                "', Longitude='" + Service.Longitude +
+                "', HasPerimeter='" + Service.HasPerimeter +
+                "', Perimeter='" + Service.Perimeter +
+                "', HasVirtualServices='" + Service.HasVirtualServices +
+                "', VirtualServices='" + string.Join(",", Service.VirtualServices) +
+                "' WHERE ServiceID='" + Service.ServiceID + "'";
+
             sqlcon.Open();
-            SqlCommand com = new SqlCommand("UPDATE Town_Services SET Name='" + Service.Name + "', TownID='" + Service.TownID + "', Rating='" + Service.Rating + "', Latitude='" + Service.Latitude + "', Longitude='" + Service.Longitude + "', HasPerimeter='" + Service.HasPerimeter + "', Perimeter='" + Service.Perimeter + "', HasVirtualServices='" + Service.HasVirtualServices + "', VirtualServices='" + Service.VirtualServices + "' WHERE ServiceID='" + Service.ServiceID + "'", sqlcon);
+            SqlCommand com = new SqlCommand(query, 
+                sqlcon);
 
             int i = com.ExecuteNonQuery();
             sqlcon.Close();

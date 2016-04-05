@@ -23,12 +23,30 @@ namespace Tester
         protected void test_Click(object sender, EventArgs e)
         {
 
+            string[] str = { "string1"};
+            string outP = string.Join(",", str);
 
-            string SOAPbdy = @"<pair>
-                                <CategoryID>" + 222222 + @"</CategoryID>
-                                <SubCategoryID>" + 3333 + @"</SubCategoryID>
-                                </pair>";
-            HttpSOAPRequest(SOAPbdy, "SetNewCategorySubCategoryPair"); 
+
+
+            string SOAPbdy = @"<Service>
+                                <ServiceID>1</ServiceID>
+                                <Name>string</Name>
+                                <TownID>1</TownID>
+                                <Rating>1.0</Rating>
+                                <Latitude>0.0</Latitude>
+                                <Longitude>0.0</Longitude>
+                                <HasPerimeter>false</HasPerimeter>
+                                <Perimeter>
+                                  <string>string</string>
+                                  <string>string</string>
+                                </Perimeter>
+                                <HasVirtualServices>true</HasVirtualServices>
+                                <VirtualServices>
+                                  <string>string1</string>
+                                  <string>string2</string>
+                                </VirtualServices>
+                              </Service>";
+            HttpSOAPRequest(SOAPbdy, "SetNewService"); 
 
 
  
