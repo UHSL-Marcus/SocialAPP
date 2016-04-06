@@ -186,7 +186,7 @@ namespace BRE_WebService
         {
             List<Category> listOfCategories = new List<Category>();
             sqlcon.Open();
-            SqlCommand com = new SqlCommand(@"  SELECT Category.CategoryID, Category.CategoryName FROM Category 
+            SqlCommand com = new SqlCommand(@"  SELECT DISTINCT Category.CategoryID, Category.CategoryName FROM Category 
                                                 INNER JOIN CategorySubCategoryPair ON Category.CategoryID=CategorySubCategoryPair.CategoryID 
                                                 INNER JOIN ServiceSubCategoryPair ON CategorySubCategoryPair.SubCategoryID=ServiceSubCategoryPair.SubCategoryID
                                                 WHERE ServiceSubCategoryPair.ServiceID=" + ServiceID, sqlcon);
@@ -256,7 +256,7 @@ namespace BRE_WebService
         public List<SubCategory> GetListOfSubCategoriesByCategoryID(int CategoryID)
         {
             sqlcon.Open();
-            SqlCommand com = new SqlCommand(@"  SELECT Sub_Category.SubCategoryID, Sub_Category.SubCategoryName FROM Sub_Category 
+            SqlCommand com = new SqlCommand(@"  SELECT DISTINCT Sub_Category.SubCategoryID, Sub_Category.SubCategoryName FROM Sub_Category 
                                                 INNER JOIN CategorySubCategoryPair ON Sub_Category.SubCategoryID=CategorySubCategoryPair.SubCategoryID 
                                                 WHERE CategoryID='" + CategoryID + "'", sqlcon);
             SqlDataReader sr = com.ExecuteReader();
@@ -405,11 +405,30 @@ namespace BRE_WebService
         public List<AllServiceInfo> GetAllServicesByCategoryID(int CategoryID)
         {
             sqlcon.Open();
-            SqlCommand com = new SqlCommand(@"  SELECT * FROM Town_Services
+            SqlCommand com = new SqlCommand(@"  SELECT DISTINCT Town_Services.*, Towns.* FROM Town_Services
                                                 INNER JOIN Towns ON Town_Services.TownID=Towns.TownID 
                                                 INNER JOIN ServiceSubCategoryPair ON Town_Services.ServiceID=ServiceSubCategoryPair.ServiceID
                                                 INNER JOIN CategorySubCategoryPair ON ServiceSubCategoryPair.SubCategoryID=CategorySubCategoryPair.SubCategoryID
                                                 WHERE CategorySubCategoryPair.CategoryID='" + CategoryID + "'", sqlcon);
+            SqlDataReader sr = com.ExecuteReader();
+
+
+
+            List<AllServiceInfo> AllInfo = AddAllServiceInfo(sr);
+
+            sqlcon.Close();
+            return AllInfo;
+        }
+
+        [WebMethod]
+        public List<AllServiceInfo> GetAllServicesByTownAndCategoryID(int CategoryID, int TownID)
+        {
+            sqlcon.Open();
+            SqlCommand com = new SqlCommand(@"  SELECT DISTINCT Town_Services.*, Towns.* FROM Town_Services
+                                                INNER JOIN Towns ON Town_Services.TownID=Towns.TownID 
+                                                INNER JOIN ServiceSubCategoryPair ON Town_Services.ServiceID=ServiceSubCategoryPair.ServiceID
+                                                INNER JOIN CategorySubCategoryPair ON ServiceSubCategoryPair.SubCategoryID=CategorySubCategoryPair.SubCategoryID
+                                                WHERE Town_Services.TownID = '" + TownID + "' AND CategorySubCategoryPair.CategoryID = '" + CategoryID + "'", sqlcon);
             SqlDataReader sr = com.ExecuteReader();
 
 
@@ -687,8 +706,7 @@ namespace BRE_WebService
         [WebMethod]
         public int SetNewService(TownServices Service)
         {
-
-            string.Join(",", Service.VirtualServices);
+     
             int returnID = -1;
 
             //if (CheckIfTownExists(Service.TownID))
@@ -1249,47 +1267,53 @@ namespace BRE_WebService
 
         private List<AllServiceInfo> AddAllServiceInfo(SqlDataReader Data)
         {
-            List<AllServiceInfo> AllServices = new List<AllServiceInfo>();            
+            List<AllServiceInfo> AllServices = new List<AllServiceInfo>();
+            List<int> serviceIDs = new List<int>();            
 
             while (Data.Read())
             {
-
-                AllServiceInfo AllInfo = new AllServiceInfo();
-                AllInfo.Service = new TownServices();
-                AllInfo.Town = new Towns();
-
-                AllInfo.Service.ServiceID = Data.GetInt32(0);
-                AllInfo.Service.Name = Data.GetString(1);
-                AllInfo.Service.TownID = Data.GetInt32(2);
-                AllInfo.Service.Rating = Data.GetDouble(3);
-                AllInfo.Service.Latitude = Data.GetDouble(4);
-                AllInfo.Service.Longitude = Data.GetDouble(5);
-                AllInfo.Service.HasPerimeter = Data.GetBoolean(6);
-                if (AllInfo.Service.HasPerimeter)
+                if (!serviceIDs.Contains(Data.GetInt32(0)))
                 {
-                    string tempPerimeter = Data.GetString(7);
-                    AllInfo.Service.Perimeter = tempPerimeter.Split(',');
-                }
 
-                AllInfo.Service.HasVirtualServices = Data.GetBoolean(8);
+                    serviceIDs.Add(Data.GetInt32(0));
 
-                if (AllInfo.Service.HasVirtualServices)
-                {
-                    string tempServices = Data.GetString(9);
-                    string[] tempServicesArr = tempServices.Split(',');
-                    for (int i = 0; i < tempServicesArr.Length; i++)
+                    AllServiceInfo AllInfo = new AllServiceInfo();
+                    AllInfo.Service = new TownServices();
+                    AllInfo.Town = new Towns();
+
+                    AllInfo.Service.ServiceID = Data.GetInt32(0);
+                    AllInfo.Service.Name = Data.GetString(1);
+                    AllInfo.Service.TownID = Data.GetInt32(2);
+                    AllInfo.Service.Rating = Data.GetDouble(3);
+                    AllInfo.Service.Latitude = Data.GetDouble(4);
+                    AllInfo.Service.Longitude = Data.GetDouble(5);
+                    AllInfo.Service.HasPerimeter = Data.GetBoolean(6);
+                    if (AllInfo.Service.HasPerimeter)
                     {
-                        AllInfo.Service.VirtualServices = tempServicesArr;
+                        string tempPerimeter = Data.GetString(7);
+                        AllInfo.Service.Perimeter = tempPerimeter.Split(',');
                     }
+
+                    AllInfo.Service.HasVirtualServices = Data.GetBoolean(8);
+
+                    if (AllInfo.Service.HasVirtualServices)
+                    {
+                        string tempServices = Data.GetString(9);
+                        string[] tempServicesArr = tempServices.Split(',');
+                        for (int i = 0; i < tempServicesArr.Length; i++)
+                        {
+                            AllInfo.Service.VirtualServices = tempServicesArr;
+                        }
+                    }
+
+                    AllInfo.Town.TownID = Data.GetInt32(10);
+                    AllInfo.Town.Town = Data.GetString(11);
+                    AllInfo.Town.County = Data.GetString(12);
+                    AllInfo.Town.Latitude = Data.GetDouble(13);
+                    AllInfo.Town.Longitude = Data.GetDouble(14);
+
+                    AllServices.Add(AllInfo);
                 }
-
-                AllInfo.Town.TownID = Data.GetInt32(10);
-                AllInfo.Town.Town = Data.GetString(11);
-                AllInfo.Town.County = Data.GetString(12);
-                AllInfo.Town.Latitude = Data.GetDouble(13);
-                AllInfo.Town.Longitude = Data.GetDouble(14);
-
-                AllServices.Add(AllInfo);
             }
 
             sqlcon.Close();

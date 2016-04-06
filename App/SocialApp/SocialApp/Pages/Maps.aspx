@@ -1,5 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Maps.aspx.cs" Inherits="SocialApp.Pages.Maps" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="StyleContent" runat="server">
+    <link rel="stylesheet" type="text/css" href="/Content/Pages/Maps.css">
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ScriptContent" runat="server">

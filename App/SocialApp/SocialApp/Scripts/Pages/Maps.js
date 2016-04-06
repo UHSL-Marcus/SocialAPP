@@ -15,12 +15,8 @@ var radius;
 
 
 function loadMap(lat, lng, home) {
-    alert("map");
     $("#map_canvas").ready(function () {
-
-        alert("ready");
-
-        
+    
         directionsService = new google.maps.DirectionsService();
 
         var mapOptions = {
@@ -84,7 +80,6 @@ function setDirectionRenderer()
 }*/
 
 function setOverlayInfo(services, categories, subcategories) {
-    alert("settings");
     if (services) allServices = services;
     if (categories) allCategories = categories;
     if (subcategories) allSubCategories = subcategories;
@@ -97,7 +92,6 @@ function setOverlayInfo(services, categories, subcategories) {
 }
 
 function loadOverlay() {
-    alert("overlay");
     
     map.controls[google.maps.ControlPosition.TOP_LEFT].clear();
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(document.getElementById("control"));
@@ -209,7 +203,6 @@ function loadOverlay() {
     });
 
     $('.mapsAddFromBtn').click(function (e) {
-        alert("stuff");
         alert(e.target);
     });
 
@@ -302,10 +295,6 @@ function subCatMarkers(subcat, clear) {
 
 function addServiceMarker(service, array)
 {
-    var str = JSON.stringify(service, null, 4);
-    alert(str);
-
-
     if (array["" + service.ServiceID] == null) {
 
         var servMarker = new google.maps.Marker({
@@ -349,9 +338,9 @@ function addServiceMarker(service, array)
             if (typeof (virt.string) != "string") {
 
                 for (i = 0; i < virt.string.length; i++)
-                    content += virt.string[i] + "</br>";
+                    content += "<a href=\"" + virt.string[i] + "\" target=\"_blank\">" + virt.string[i] + "</a>" + "</br>";
             } else
-                content += virt.string + "</br>";
+                content += "<a href=\"" + virt.string + "\" target=\"_blank\">" + virt.string + "</a>" + "</br>";
         }
 
         content += "</div>" +

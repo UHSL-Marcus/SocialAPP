@@ -42,6 +42,7 @@ function locateTown() {
                     townMarker.setMap(null);                                        // remove current marker
 
                 townMarker = centerAndMarker(townToScan[val].geometry.location);    // add new marker and move map
+                $('#TownData').val(JSON.stringify(townToScan[val]));
             });
 
             $('#selectedTown').trigger('change'); // trigger the event for the first option
@@ -92,8 +93,8 @@ function runNearbyQueue() {
         var tempResult = [requestQueue[0].l, requestQueue[0].t, requestQueue[0].d];
         requestQueue.splice(0, 1);                                          // remove sent request from the array
 
-        //if (requestCount < 6) 
-        if (requestQueue.length > 0)                                        // either self recurse or end
+        if (requestCount < 3) 
+        //if (requestQueue.length > 0)                                        // either self recurse or end
             setTimeout(runNearbyQueue, 500);
         else queueRunning = false;
 
@@ -173,8 +174,8 @@ function getnearby(location, townName, direction) {
             }
         } else log("Bad nearby Request: " + status);
 
-        //if (!queueRunning) {
-        if (requestPending <= 0 && !queueRunning || cancelProcessing) {                 // work out if the search is exhausted, no pending requests and the queue not running
+        if (!queueRunning) {
+        //if (requestPending <= 0 && !queueRunning || cancelProcessing) {                 // work out if the search is exhausted, no pending requests and the queue not running
             if (!cancelProcessing) {
                 //all done
                 requestCount = 0;
@@ -277,8 +278,8 @@ function runDetailQueue() {
         log("requestData: " + tempResult);
         log(waitTime + " " + searchResults.length + " remaining");
 
-        //if (requestCount < 10)
-        if (searchResults.length > 0)
+        if (requestCount < 30)
+        //if (searchResults.length > 0)
             setTimeout(runDetailQueue, waitTime);
         else queueRunning = false;
 
@@ -352,10 +353,10 @@ function detailsRequest(service) {
             }  
         }
 
-        //if (!queueRunning) {   
+        if (!queueRunning) {   
         log("Queue Async: " + queueRunning);
         log("processing Async: " + requestPending);
-        if (requestPending <= 0 && !queueRunning || cancelProcessing) {                                                 // once again, wait till the end
+        //if (requestPending <= 0 && !queueRunning || cancelProcessing) {                                                 // once again, wait till the end
             //all done
             if (!cancelProcessing) updateServiceData();
             else uploadReturn(true);

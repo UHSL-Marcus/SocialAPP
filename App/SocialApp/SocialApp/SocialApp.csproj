@@ -150,6 +150,7 @@
     <Content Include="Content\Pages\Create.css" />
     <Content Include="Content\Pages\Create_profile_Common.css" />
     <Content Include="Content\Pages\Home.css" />
+    <Content Include="Content\Pages\Maps.css" />
     <Content Include="Content\Pages\Master.css" />
     <Content Include="Content\Pages\Profile.css" />
     <Content Include="Content\Pages\Stats.css" />

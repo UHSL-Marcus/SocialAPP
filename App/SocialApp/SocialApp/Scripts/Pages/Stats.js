@@ -8,7 +8,6 @@ var townVirtRatings;
 
 
 function LoadStats(userRatingsJson, townRatingsJson, townVirtRatingsJson) {
-    alert("stats");
 
     if (userRatingsJson) userRatings = userRatingsJson;
     if (townRatingsJson) townRatings = townRatingsJson;

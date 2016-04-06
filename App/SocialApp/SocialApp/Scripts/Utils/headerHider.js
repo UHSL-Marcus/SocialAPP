@@ -39,7 +39,6 @@ function hideHeader(hide, position)
 
 function wireup_mouseoverEvent()
 {
-    alert("wireup");
     //$('#mouseoverHeaderHideDiv').off();
     $('.mouseoverOverlayShowDiv').mouseover(function () {
         var classes = getElementClassArray($(this));

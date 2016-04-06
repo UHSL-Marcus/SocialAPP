@@ -1,4 +1,5 @@
-﻿
+﻿.background {background-color: #662E93}
+
 .statInput{width:10%};
 .statGraphContainer{height:300px; width:100%;}
 .statGraphSwap{cursor:pointer;}

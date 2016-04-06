@@ -230,14 +230,14 @@ namespace GoogleDataCollection
                 TempError += "Adding new subcategory IDs\n";
                 foreach (KeyValuePair<string, ArrayList> cat in tempcategory)
                 {
-                    foreach (String subcat in cat.Value)
+                    foreach (string subcat in cat.Value)
                     {
                         if (!arrayListContainsCaseInsensitve(allCapturedTypes, subcat))
                             allCapturedTypes.Add(subcat);
 
                         if (arrayListContainsCaseInsensitve(allsubcatnames, subcat))
                         {
-                            String tempsubcatID = allsubcats.getElementFromSibling("SubCategory", "SubCategoryName", subcat, "SubCategoryID");
+                            string tempsubcatID = allsubcats.getElementFromSibling("SubCategory", "SubCategoryName", subcat, "SubCategoryID");
 
                             // only add if this subcat is not already paired with this service and if it has not already been added to the new ID's
                             if (!arrayListContainsCaseInsensitve(currentSubCatNames, subcat) && !arrayListContainsCaseInsensitve(subcatIDs, tempsubcatID)) 
@@ -250,14 +250,14 @@ namespace GoogleDataCollection
                 TempError += "pruning subcategory/service pairs\n"; 
 
                 //TODO: test pruning - later
-                foreach (String currentName in currentSubCatNames)
+                foreach (string currentName in currentSubCatNames)
                 {
                     // check if the name is in the current capured list or not
                     if (!arrayListContainsCaseInsensitve(allCapturedTypes, currentName))
                     {
-                        String tempsubcatID = allsubcats.getElementFromSibling("SubCategory", "SubCategoryName", currentName, "SubCategoryID");
+                        string tempsubcatID = allsubcats.getElementFromSibling("SubCategory", "SubCategoryName", currentName, "SubCategoryID");
                         // delete it, this subcategory is no longer linked to this service
-                        String SOAPbdy = @" <pair>
+                        string SOAPbdy = @" <pair>
                                                 <ServiceID>" + serviceID + @"</ServiceID>
                                                 <SubCategoryID>" + tempsubcatID + @"</SubCategoryID>
                                             </pair>";
@@ -304,6 +304,7 @@ namespace GoogleDataCollection
 
         protected void UpdateCountAndNormal_Click(object sender, EventArgs e)
         {
+            
             HttpSOAPRequest("<TownID>" + Session["TownID"] + "</TownID>", "UpdateTownServiceCount");
             HttpSOAPRequest("", "UpdateTownNormalisations");
 
@@ -355,9 +356,9 @@ namespace GoogleDataCollection
 
             }
         }
-        private void updateCategories(Dictionary<String, ArrayList> catAndSubCat)
-        {
-            foreach (KeyValuePair<String, ArrayList> cat in catAndSubCat)
+        private void updateCategories(Dictionary<string, ArrayList> catAndSubCat)
+        { 
+            foreach (KeyValuePair<string, ArrayList> cat in catAndSubCat)
             {
                 // grab all the current categories
                 XMLParse allcategories = new XMLParse(HttpSOAPRequest("", "GetListOfCategories"));
@@ -368,31 +369,34 @@ namespace GoogleDataCollection
                 XMLParse allsubcats = new XMLParse(HttpSOAPRequest("", "GetListOfSubCategories"));
                 ArrayList allsubcatnames = allsubcats.getAllElementsText("SubCategoryName");
 
-                String catID = "-1";
+                string catID = "-1";
                 ArrayList subcatIDs = new ArrayList();
 
                 // if this category is already present
                 if (arrayListContainsCaseInsensitve(allcatnames, cat.Key))
                 {
                     catID = allcategories.getElementFromSibling("Category", "CategoryName", cat.Key, "CategoryID"); // Category ID
-                    XMLParse currentSubCats = new XMLParse(HttpSOAPRequest("<CategoryID>" + catID + "</CategoryID>", "GetListOfSubCategoriesByCategoryID")); // get all subcategories this cat already has
-                    ArrayList allCurrentSubCatNames = currentSubCats.getAllElementsText("SubCategoryName"); // get their names
-
-                    // loop each type (subcategory) passed
-                    foreach (String type in cat.Value)
+                    if (catID != "-1") // if the ID wasn't found
                     {
-                        // make sure this subcategory exists in the database
-                        if (arrayListContainsCaseInsensitve(allsubcatnames, type))
+                        XMLParse currentSubCats = new XMLParse(HttpSOAPRequest("<CategoryID>" + catID + "</CategoryID>", "GetListOfSubCategoriesByCategoryID")); // get all subcategories this cat already has
+                        ArrayList allCurrentSubCatNames = currentSubCats.getAllElementsText("SubCategoryName"); // get their names
+
+                        // loop each type (subcategory) passed
+                        foreach (string type in cat.Value)
                         {
-                            // if this type is not currently a subcategory for this category
-                            if (!arrayListContainsCaseInsensitve(allCurrentSubCatNames, type))
+                            // make sure this subcategory exists in the database
+                            if (arrayListContainsCaseInsensitve(allsubcatnames, type))
                             {
-                                String tempID = allsubcats.getElementFromSibling("SubCategory", "SubCategoryName", type, "SubCategoryID");
-                                String SOAPbdy = @" <pair>
+                                // if this type is not currently a subcategory for this category
+                                if (!arrayListContainsCaseInsensitve(allCurrentSubCatNames, type))
+                                {
+                                    string tempID = allsubcats.getElementFromSibling("SubCategory", "SubCategoryName", type, "SubCategoryID");
+                                    string SOAPbdy = @" <pair>
                                                         <CategoryID>" + catID + @"</CategoryID>
                                                         <SubCategoryID>" + tempID + @"</SubCategoryID>
                                                     </pair>";
-                                HttpSOAPRequest(SOAPbdy, "SetNewCategorySubCategoryPair"); // create a new pair refrence
+                                    HttpSOAPRequest(SOAPbdy, "SetNewCategorySubCategoryPair"); // create a new pair refrence
+                                }
                             }
                         }
                     }
