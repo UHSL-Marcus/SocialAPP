@@ -38,10 +38,12 @@ function LoadStats(userRatingsJson, townRatingsJson, townVirtRatingsJson) {
         $(this).find('#stat' + section.replace(/\W/g, '') + 'Modal').addClass('hidden');
     });
 
+    addModal("statExpandModal");
     function showStatModal(e) {
         $('#statExpandModal').data("cat", e.dataPoint.label);
         $('#statExpandModal').modal('show');
     }
+    
 
     // build graphs for Profile Vs Town View
     if (typeof ($(".proVsTownChartContainer").val()) != "undefined") { // only execute if the stats page is currently loaded

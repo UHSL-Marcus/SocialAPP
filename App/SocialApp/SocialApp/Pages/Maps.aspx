@@ -44,6 +44,7 @@
                 <div class="modal-header text-center">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h1 class="modal-title" id="loginModalLabel">Route Report</h1>
+                    <h2><span id="modalUsefulnessInfo"/></h2>
                 </div>
           
                 <div id="routeReportModalBody" class="modal-body">

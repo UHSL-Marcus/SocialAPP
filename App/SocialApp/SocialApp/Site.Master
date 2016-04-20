@@ -77,6 +77,17 @@
         <div class="mouseoverHeaderHideDiv"></div>
 
         <div class="fill flex-container" id="MainContentHolder">
+
+            <div class="modal fade" id="loadingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div id="loadingModalBody" class="modal-body">
+                            Loading...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
         </div>

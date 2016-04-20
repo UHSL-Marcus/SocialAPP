@@ -1,7 +1,6 @@
 ﻿
 
 $(document).ready(function () {
-
 });
 
 function wireUp_LoginEvents() {
@@ -32,5 +31,6 @@ function wireUp_LoginEvents() {
 }
 
 function showLogin() {
+    addModal("loginModal");
     $('#loginModal').modal();
 }

@@ -26,3 +26,4 @@
 /// <reference path="utils/jspostcode.js" />
 /// <reference path="utils/jstelnumbers.js" />
 /// <reference path="utils/misc.js" />
+/// <reference path="utils/modalposition.js" />

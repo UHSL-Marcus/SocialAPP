@@ -977,7 +977,7 @@ namespace BRE_WebService
         }
 
         [WebMethod]
-        public String UpdateTownNormalisations()
+        public string UpdateTownNormalisations()
         {
             int success = 0;
             List<Category> allCategories = GetListOfCategories();

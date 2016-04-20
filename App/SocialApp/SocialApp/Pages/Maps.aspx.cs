@@ -51,14 +51,14 @@ namespace SocialApp.Pages
 
         }
 
-        private void loadTownInfo(String town)
+        private void loadTownInfo(string town)
         {
             //TODO: error log/alert messages
 
-            XMLParse townList = new XMLParse((String)Session[Paths.TOWNLIST], SOAPRequest.soapNamespace); // set up the town list for parsing
-            String lat = "";
-            String lng = "";
-            String home = "false";  // flag for if the selected town is their home
+            XMLParse townList = new XMLParse((string)Session[Paths.TOWNLIST], SOAPRequest.soapNamespace); // set up the town list for parsing
+            string lat = "";
+            string lng = "";
+            string home = "false";  // flag for if the selected town is their home
 
 
             if (town.Equals("Home"))
@@ -87,10 +87,10 @@ namespace SocialApp.Pages
 
             // pulling service info from the database
 
-            String id = townList.getElementFromSibling("Towns", "Town", town, "TownID");                        // extract the town ID
+            string id = townList.getElementFromSibling("Towns", "Town", town, "TownID");                        // extract the town ID
             HTTPRequest req = new HTTPRequest();
-            String response = req.HttpSOAPRequest("<TownID>" + id + "</TownID>", "GetAllServicesForTownByID");  // request all the service info for that town
-            String result = (new XMLParse(response, SOAPRequest.soapNamespace)).getElementText("TownID");       // check reply has data for the correct town
+            string response = req.HttpSOAPRequest("<TownID>" + id + "</TownID>", "GetAllServicesForTownByID");  // request all the service info for that town
+            string result = (new XMLParse(response, SOAPRequest.soapNamespace)).getElementText("TownID");       // check reply has data for the correct town
 
             int tID = 0;
             int returnTID = 0;
@@ -101,7 +101,7 @@ namespace SocialApp.Pages
             if (tID == returnTID)
             {
 
-                List<String> allServe = (new XMLParse(response, SOAPRequest.soapNamespace).getWholeSection("AllServiceInfo")); // get list object of all the services 
+                List<string> allServe = (new XMLParse(response, SOAPRequest.soapNamespace).getWholeSection("AllServiceInfo")); // get list object of all the services 
 
                 Dictionary<string, List<string>> allCategories = new Dictionary<string, List<string>>();        // Key: Category name, Value: List of subcategory names related to the category
                 Dictionary<string, List<string>> allSubCategories = new Dictionary<string, List<string>>();     // Key: Subcategory name, Value: list of service ID's which have that subcategory
@@ -162,13 +162,13 @@ namespace SocialApp.Pages
                     }
 
 
-                    serviceParse.AddElement("Service", "CategoryNames");
-                    foreach (string cat in allCategoryNames)
-                        serviceParse.AddElement("CategoryNames", "String", cat);
+                    serviceParse.AddElement("Service", "CategoryNames", string.Join(",", allCategoryNames));
+                    //foreach (string cat in allCategoryNames)
+                    //serviceParse.AddElement("CategoryNames", "String", cat);
 
-                    serviceParse.AddElement("Service", "SubCategoryNames");
-                    foreach (string subcat in allSubCategoryNames)
-                        serviceParse.AddElement("SubCategoryNames", "String", subcat);
+                    serviceParse.AddElement("Service", "SubCategoryNames", string.Join(",", allSubCategoryNames));
+                    //foreach (string subcat in allSubCategoryNames)
+                        //serviceParse.AddElement("SubCategoryNames", "String", subcat);
 
                     serviceParse.getElementText("CategoryNames");
 
@@ -176,25 +176,44 @@ namespace SocialApp.Pages
                         allServices.Add(serviceID, serviceParse.convertToJSON());                                                       // add the entry to the services dictionary
                 }
 
+                Dictionary<string, int> userProfileRatings = new Dictionary<string, int>();
+
+                XMLParse userInfo = new XMLParse((string)Session[Paths.USERDETAILS], SOAPRequest.soapNamespace);
+
+                userProfileRatings.Add("Education", int.Parse(userInfo.getElementText("Category_1")));
+                userProfileRatings.Add("Transport", int.Parse(userInfo.getElementText("Category_2")));
+                userProfileRatings.Add("Entertainment", int.Parse(userInfo.getElementText("Category_3")));
+                userProfileRatings.Add("Disposal", int.Parse(userInfo.getElementText("Category_4")));
+                userProfileRatings.Add("Local Economy", int.Parse(userInfo.getElementText("Category_5")));
+                userProfileRatings.Add("Comms & Soc Conn", int.Parse(userInfo.getElementText("Category_6")));
+                userProfileRatings.Add("Well being", int.Parse(userInfo.getElementText("Category_7")));
+                userProfileRatings.Add("Psychological", int.Parse(userInfo.getElementText("Category_8")));
+                userProfileRatings.Add("Recog", int.Parse(userInfo.getElementText("Category_9")));
+                userProfileRatings.Add("Health", int.Parse(userInfo.getElementText("Category_10")));
+                userProfileRatings.Add("Saftey Sec", int.Parse(userInfo.getElementText("Category_11")));
+                userProfileRatings.Add("Consum", int.Parse(userInfo.getElementText("Category_12")));
+                userProfileRatings.Add("Enviro Perf", int.Parse(userInfo.getElementText("Category_13")));
+                userProfileRatings.Add("Biodi", int.Parse(userInfo.getElementText("Category_14")));
+                userProfileRatings.Add("Govern", int.Parse(userInfo.getElementText("Category_15")));
+                userProfileRatings.Add("Shelter", int.Parse(userInfo.getElementText("Category_16")));
+                userProfileRatings.Add("Emotional Well", int.Parse(userInfo.getElementText("Category_17")));
+
+                
+
+
                 string allServicesJSON = JsonConvert.SerializeObject(allServices);                                                      // convert all dictionaries to JSON Strings
                 string allCategoriesJSON = JsonConvert.SerializeObject(allCategories);
                 string allSubCategoriesJSON = JsonConvert.SerializeObject(allSubCategories);
+                string userProfileRatingsJSON = JsonConvert.SerializeObject(userProfileRatings);
 
                 // Javascript function to load the overlay, takes the above generated info. 
-                ScriptManager.RegisterStartupScript(mapInputUpdatePanel, mapInputUpdatePanel.GetType(), "Services" + UniqueID, "setOverlayInfo(" + allServicesJSON + "," + allCategoriesJSON + "," + allSubCategoriesJSON + ");", true);
+                ScriptManager.RegisterStartupScript(mapInputUpdatePanel, mapInputUpdatePanel.GetType(), "Services" + UniqueID, "setOverlayInfo(" + allServicesJSON + "," + allCategoriesJSON + "," + allSubCategoriesJSON + "," + userProfileRatingsJSON + ");", true);
             }
         }
         protected void mapsTownList_SelectedIndexChanged(object sender, EventArgs e)
         {
             loadTownInfo(mapsTownList.SelectedValue);
         }
-
-
-        public void getRouteReportInfo()
-        {
-            //JsonConvert.
-        }
-
 
 
 

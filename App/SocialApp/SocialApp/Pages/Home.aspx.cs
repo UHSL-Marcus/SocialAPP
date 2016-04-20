@@ -9,13 +9,13 @@ namespace SocialApp.Pages
         private SiteMaster thisMaster;
         protected void Page_Load(object sender, EventArgs e)
         {
-            thisMaster = this.Master as SiteMaster;
+            thisMaster = Master as SiteMaster;
             thisMaster.setChild(this);
         }
 
         private void showLogin()
         {
-            String t = "showLogin();";
+            string t = "showLogin();";
             ScriptManager.RegisterStartupScript(homeUpdatePanel, homeUpdatePanel.GetType(), "ShowLogin" + UniqueID, t, true);
             t = "wireUp_LoginEvents();";
             ScriptManager.RegisterStartupScript(homeUpdatePanel, homeUpdatePanel.GetType(), "WireuUpLogin" + UniqueID, t, true);
@@ -66,7 +66,7 @@ namespace SocialApp.Pages
             int uID = 0;
             Int32.TryParse(uIDs, out uID);
 
-            if (uID > 0 || true)
+            if (uID > 0)
             {
                 Session[Paths.USERDETAILS] = response;
                 Session[Paths.USERGEOLOC] = HTTPRequest.getGoogleGeoLocation(response);

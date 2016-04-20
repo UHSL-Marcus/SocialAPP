@@ -12,6 +12,8 @@ var allServices;
 var allCategories;
 var allSubCategories;
 var radius;
+var userProfileRating;
+var routeCategoryCount = {};
 
 
 function loadMap(lat, lng, home) {
@@ -79,7 +81,7 @@ function setDirectionRenderer()
     }
 }*/
 
-function setOverlayInfo(services, categories, subcategories) {
+function setOverlayInfo(services, categories, subcategories, userRating) {
     if (services) allServices = services;
     if (categories) allCategories = categories;
     if (subcategories) allSubCategories = subcategories;
@@ -87,6 +89,8 @@ function setOverlayInfo(services, categories, subcategories) {
     $.each(allServices, function (index, value) {
         allServices[index] = JSONstring.toObject(value);
     });
+
+    if (userRating) userProfileRating = userRating;
 
     if (map) loadOverlay();
 }
@@ -126,6 +130,7 @@ function loadOverlay() {
 
     });
 
+    addModal("routeReportModal");
     $('#mapsFindRoute').click(function () {
         var start = $('#mapFromInput').val();
         var end = $('#mapToInput').val();
@@ -154,7 +159,7 @@ function loadOverlay() {
 
                         if (!route.largerBounds) // expand the bounds by 200 meters, to make sure all services needed are captured
                             route.largerBounds = new google.maps.LatLngBounds(findNewLatLng(route.bounds.getSouthWest(), 200, 200, false, false), findNewLatLng(route.bounds.getNorthEast(), 200, 200, true, true));
-                    
+
                         if (route.largerBounds.contains(servLoc)) {                                 // only carry on if this service is at least inside this bounds
                             for (var legItr = 0; legItr < route.legs.length; legItr++) {            // each leg in the route
                                 var leg = route.legs[legItr];
@@ -168,9 +173,11 @@ function loadOverlay() {
                                             if (distanceBetweenPoints(pathPoint, servLoc) <= 200) {     // if service is within 200 meters
 
                                                 addServiceMarker(value, routeMarkers);                  // show a marker
+
                                                 addServiceToReport(value);                              // Add service to the route report
-                                               
+
                                                 found = true;                                           // service is along the route, break
+                                                
                                                 break;
                                             }
 
@@ -184,7 +191,7 @@ function loadOverlay() {
                         }
                         if (found) break;
                     }
-                })
+                });
 
                 // show the report modal
                 $('#routeReportModal').modal();
@@ -193,6 +200,7 @@ function loadOverlay() {
             else alert("Directions failed: " + status);
         });
     });
+    
 
     $("#mapsRouteReport").click(function () {
         $('#routeReportModal').modal();
@@ -239,6 +247,8 @@ function clearRoute()
     setDirectionRenderer();                                         // reset the direction renderer
     $('#routeReportModalBody').html("");
     $('#mapsRouteReport').attr("disabled", "disabled");
+    routeCategoryCount = {};
+
 }
 
 function clearMarkerCollection(collection)
@@ -322,15 +332,20 @@ function addServiceMarker(service, array)
 
         //$.each(service.CategoryIDs, function (i, v) { alert(v); })
 
-        $.each(service.CategoryNames, function (index, value) {
-            content += value + " ";
-        })
+        if (service.CategoryNames) {
+            var splitCat = service.CategoryNames.split(",");
+            $.each(splitCat, function (index, value) {
+                content += value + " ";
+            })
+        }
         content += "<h4>SubCategories</h4>";
 
-
-        $.each(service.SubCategoryNames, function (index, value) {
-            content += value + " ";
-        })
+        if (service.SubCategoryNames) {
+            splitCat = service.SubCategoryNames.split(",");
+            $.each(splitCat, function (index, value) {
+                content += value + " ";
+            })
+        }
 
         var virt = service.VirtualServices;
         if (service.HasVirtualServices.toLowerCase() == "true") {
@@ -468,25 +483,77 @@ function findNewLatLng(oriLoc, latDist, lngDist, north, east) {
 
 function addServiceToReport(service) {
 
+    if (!routeCategoryCount.raw) routeCategoryCount.raw = {};
+    if (!routeCategoryCount.normal) routeCategoryCount.normal = {};
+
     var content = "<div>" +
                         "<button class=\"btn btn-default\" type=\"button\" data-toggle=\"collapse\" data-target=\"#" + service.Name.replace(/\W/g, '') + "CollapseInfo\">" + service.Name + "</button>" +
                         "<div class=\"collapse\" id=\"" + service.Name.replace(/\W/g, '') + "CollapseInfo\">" +
                             "<h3>" + service.Name + "</h3>" +
                             "<h4>Rating</h4>" + service.Rating + "/10";
+                            "<h4>Categories</h4>";
+                            
+                            if (service.CategoryNames) {
+                                var splitCat = service.CategoryNames.split(",");
+                                $.each(splitCat, function (index, value) {
+                                    if (!routeCategoryCount.raw.hasOwnProperty(value)) {
+                                        routeCategoryCount.raw[value] = 0;
+                                    }
+                                    routeCategoryCount.raw[value]++;
+                                    content += value + " ";
+                                });
 
-                                var virt = service.VirtualServices;
-                                if (service.HasVirtualServices.toLowerCase() == "true") {
-                                    content += "<h4>Website</h4>";
-                                    if (typeof (virt.string) != "string") {
+                            }
+                            content += "<h4>SubCategories</h4>";
+                            
+                            if (service.SubCategoryNames) {
+                                splitCat = service.SubCategoryNames.split(",");
+                                $.each(splitCat, function (index, value) {
+                                    content += value + " ";
+                                });
+                            }
 
-                                        for (i = 0; i < virt.string.length; i++)
-                                            content += virt.string[i] + "</br>";
-                                    } else
-                                        content += virt.string + "</br>";
-                                }
-        content +=      "</div>" +
+                            var virt = service.VirtualServices;
+                            if (service.HasVirtualServices.toLowerCase() == "true") {
+                                content += "<h4>Website</h4>";
+                                if (typeof (virt.string) != "string") {
+
+                                    for (i = 0; i < virt.string.length; i++)
+                                        content += virt.string[i] + "</br>";
+                                } else
+                                    content += virt.string + "</br>";
+                            }
+    content +=          "</div>" +
                     "</div>";
 
-        $("#routeReportModalBody").append(content);
+    $("#routeReportModalBody").append(content);
+
+    // find the category with the highest count
+    var high = -1;
+    $.each(routeCategoryCount.raw, function (index, value) {
+        if (value > high) high = value;
+    });
+    // normalise each category against the highest one
+    $.each(routeCategoryCount.raw, function (index, value) {
+        routeCategoryCount.normal[index] = (value == 0 || high == 0) ? 0 : Math.round((value / high)* 10) ;
+    });
+
+    // Add up the total differences between the user ratings and normal values caculated above.
+    // if a category is not represented on this route, the difference is automatically 10.
+    var total = 0;
+    var count = 0;
+    $.each(userProfileRating, function (index, value) {
+        count++;
+        if (routeCategoryCount.normal.hasOwnProperty(index)) 
+            total += Math.abs(routeCategoryCount.normal[index] - value);
+        else total += 10;
+    });
+
+    // convert the difference into a percentage.
+    // highest difference is count * 10. each count has a percentage point worth of 100 / the highest difference
+    // first invert becuase lower difference means higher percentage (highest difference - total)
+    // multiply by the calculated worth of each point to get the percentage. 
+    var calcTotal = ((count * 10) - total) * (100 / (count * 10));
+    $("#modalUsefulnessInfo").text("Route Usefullness: " + calcTotal + "%");
 
 }
