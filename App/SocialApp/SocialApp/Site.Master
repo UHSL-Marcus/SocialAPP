@@ -52,11 +52,13 @@
         <asp:ContentPlaceHolder ID="ScriptContent" runat="server" />
 
         <div class="mouseoverOverlayShowDiv topLeftOverlay"></div>
+        <div class="mouseoverOverlayShowDivSide topLeftOverlay"></div>
         <div class="overlay topLeftOverlay nonInteractive">
             <asp:ImageButton runat="server" ID="homeBtn" ImageUrl="/Resources/Icons/backArrow.png" CssClass="allowPointer headerBackBtn" OnClick="homeBtn_Click" ClientIDMode="Static" />
         </div>
 
         <div class="mouseoverOverlayShowDiv topRightOverlay"></div>
+        <div class="mouseoverOverlayShowDivSide topRightOverlay"></div>
         <asp:UpdatePanel runat="server" ID="topRightHeaderUpdatePanel" UpdateMode="Conditional" class="overlay topRightOverlay nonInteractive">
             <ContentTemplate>
                 <div class="flex-container flex-column">
@@ -93,6 +95,7 @@
         </div>
         
         <div class="mouseoverOverlayShowDiv bottomLeftOverlay"></div>
+        <div class="mouseoverOverlayShowDivSide bottomLeftOverlay"></div>
         <div class="overlay bottomLeftOverlay nonInteractive">
             <p>&copy; <%: DateTime.Now.Year %> - BRE Social App</p>
         </div>

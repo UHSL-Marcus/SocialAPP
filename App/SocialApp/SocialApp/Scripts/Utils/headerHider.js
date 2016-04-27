@@ -6,9 +6,11 @@ function setMouseoverSizes() {
     $(".overlay").each(function (index) {
         var classes = getElementClassArray($(this));
         var width = $(this).outerWidth(true);
+        var height = $(this).outerHeight(true);
         
         $.each(classes, function (index, item) {
-            $(".mouseoverOverlayShowDiv." + item).width(width); 
+            $(".mouseoverOverlayShowDiv." + item).width(width);
+            $(".mouseoverOverlayShowDivSide." + item).height(height);
         });
     });
 }
@@ -25,7 +27,7 @@ function hideHeader(hide, position)
     if (hide) {
         $(".overlay").hide();
         $('.mouseoverHeaderHideDiv').hide();
-        $(".mouseoverOverlayShowDiv").height(5);
+        $(".mouseoverOverlayShowDiv").height(7);
     }
     else {
         $(".overlay." + position).show();
@@ -40,7 +42,7 @@ function hideHeader(hide, position)
 function wireup_mouseoverEvent()
 {
     //$('#mouseoverHeaderHideDiv').off();
-    $('.mouseoverOverlayShowDiv').mouseover(function () {
+    $('.mouseoverOverlayShowDiv, .mouseoverOverlayShowDivSide').mouseover(function () {
         var classes = getElementClassArray($(this));
         $.each(classes, function (index, item) {
             if (hideMode) hideHeader(false, item);

@@ -26,7 +26,7 @@ namespace SocialApp
                 userNameHeaderLbl.Text = getName.getElementText("Firstname") + " " + getName.getElementText("Surname");
             } else {
                 ScriptManager.RegisterStartupScript(topRightHeaderUpdatePanel, topRightHeaderUpdatePanel.GetType(), "signoutBtnTrue" + UniqueID, @"hideSignoutBtn(true);", true);
-                userNameHeaderLbl.Text = "Not Signed In checked";
+                userNameHeaderLbl.Text = "Not Signed In ";
 
                 if (currentChild is Pages.Home) {
                     Console.WriteLine("Home Page");

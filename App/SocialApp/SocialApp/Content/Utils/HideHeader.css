@@ -3,6 +3,11 @@
     height:5px;
     z-index:100;
 }
+.mouseoverOverlayShowDivSide{
+    position: absolute; 
+    width:5px;
+    z-index:100;
+}
 .mouseoverHeaderHideDiv {
     width:100vw;
     position: absolute;

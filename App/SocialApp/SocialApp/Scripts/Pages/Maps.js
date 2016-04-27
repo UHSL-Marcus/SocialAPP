@@ -15,7 +15,6 @@ var radius;
 var userProfileRating;
 var routeCategoryCount = {};
 
-
 function loadMap(lat, lng, home) {
     $("#map_canvas").ready(function () {
     
@@ -38,9 +37,14 @@ function loadMap(lat, lng, home) {
         placesService = new google.maps.places.PlacesService(map);
 
         if (home) {
+            var marker_image = {
+                url: '/Resources/Icons/Map_Markers/Home.ico',
+                scaledSize: new google.maps.Size(32, 32)
+            }
             homeMkr = new google.maps.Marker({
                 position: { lat: lat, lng: lng },
                 map: map,
+                icon: marker_image,
                 title: "Home"
             });
             $('#mapRadiusInput').val(lat + "," + lng);  
@@ -303,13 +307,34 @@ function subCatMarkers(subcat, clear) {
     });
 }
 
+// TODO: "Icon made by http://scottdejonge.com/ from http://www.flaticon.com/" for markers
 function addServiceMarker(service, array)
 {
     if (array["" + service.ServiceID] == null) {
 
+        var category = $('#mapCatList').val();
+        var splitCat = [];
+        if (service.CategoryNames) 
+            splitCat = service.CategoryNames.split(",");
+        
+        if (!splitCat.includes(category)) {
+            if (splitCat.length < 1)
+                category = "Unknown";
+            else {
+                //alert("Random: " + (Math.random() * (splitCat.length - 1)));
+                //category = splitCat[Math.floor((Math.random() * (splitCat.length-1)))];
+                category = splitCat[0];
+            }
+        }
+
+        var marker_image = {
+            url: '/Resources/Icons/Map_Markers/' + category + '.ico',
+            scaledSize: new google.maps.Size(32, 32)
+        }
         var servMarker = new google.maps.Marker({
             position: { lat: +service.Latitude, lng: +service.Longitude },
             map: map,
+            icon: marker_image,
             title: service.Name
         });
 
@@ -319,18 +344,12 @@ function addServiceMarker(service, array)
 
         array["" + service.ServiceID] = servMarker;
 
-
-
-        //array.push({ id: service.ServiceID, marker: servMarker });
-
-
         var content = "<div class='flex-container'>" +
            "<div class='flex-1'>" +
            "<h3>" + service.Name + "</h3>" +
            "<h4>Rating</h4>" + service.Rating + "/10" +
            "<h4>Categories</h4>";
 
-        //$.each(service.CategoryIDs, function (i, v) { alert(v); })
 
         if (service.CategoryNames) {
             var splitCat = service.CategoryNames.split(",");
@@ -553,7 +572,7 @@ function addServiceToReport(service) {
     // highest difference is count * 10. each count has a percentage point worth of 100 / the highest difference
     // first invert becuase lower difference means higher percentage (highest difference - total)
     // multiply by the calculated worth of each point to get the percentage. 
-    var calcTotal = ((count * 10) - total) * (100 / (count * 10));
+    var calcTotal = Math.round(((count * 10) - total) * (100 / (count * 10)));
     $("#modalUsefulnessInfo").text("Route Usefullness: " + calcTotal + "%");
 
 }
