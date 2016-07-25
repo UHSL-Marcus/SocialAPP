@@ -1,0 +1,14 @@
+back button hidden on home page
+
+profile:
+lifestyle sliders/javascript or html5
+move update button
+sort out personal layout
+
+stats:
+try and centre graphs better
+remember tab
+
+map:
+icons a bit bigger/more anti aliasing?
+round rating numbers

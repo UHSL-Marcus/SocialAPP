@@ -16,14 +16,20 @@ namespace SocialApp.Pages
             thisMaster.setChild(this);
 
             setProfileDetails();
-            ScriptManager.RegisterStartupScript(profileUpdatePanel, profileUpdatePanel.GetType(), "wireup" + UniqueID, "wireupProfileValidation();", true);
+            ScriptManager.RegisterStartupScript(profileUpdatePanel, profileUpdatePanel.GetType(), "wireup" + UniqueID, "wireupHeadings();wireupProfileValidation();", true);
         }
 
         private void setProfileDetails()
         {
-            XMLParse xml = new XMLParse((String)Session[Paths.USERDETAILS], SOAPRequest.soapNamespace);
+            XMLParse xml = new XMLParse((string)Session[Paths.USERDETAILS], SOAPRequest.soapNamespace);
+
+            DateTime dob = DateTime.Parse(xml.getElementText("DateOfBirth"));
+            DateMenu.setDateDropdown(profileSelMonth, profileSelYear, dob.Month, dob.Year);
+            profileSelHiddenDay.Value = dob.Day.ToString();
+            ScriptManager.RegisterStartupScript(profileUpdatePanel, profileUpdatePanel.GetType(), "setDay" + UniqueID, "setProfileDay();", true);
+
             // Personal Details
-            profilePersonalFName.Value = xml.getElementText("Firstname");
+            /*profilePersonalFName.Value = xml.getElementText("Firstname");
             profilePersonalLName.Value = xml.getElementText("Surname");
             profileSelGender.SelectedValue = xml.getElementText("Gender");
             DateTime dob = DateTime.Parse(xml.getElementText("DateOfBirth"));
@@ -60,7 +66,7 @@ namespace SocialApp.Pages
             profileCat15.Value = xml.getElementText("Category_15");
             profileCat16.Value = xml.getElementText("Category_16");
             profileCat17.Value = xml.getElementText("Category_17");
-            profileCatLabel1.InnerText = "Enviroment";
+            profileCatLabel1.InnerText = "Enviroment";*/
 
         }
 
@@ -72,7 +78,7 @@ namespace SocialApp.Pages
 
         protected void updateProfile_Click(object sender, EventArgs e)
         {
-            updateProfileMessage.InnerText = "Validation Error";
+            /*updateProfileMessage.InnerText = "Validation Error";
 
             // validate all input -- not doing anything comprehesive yet, no SQL injection defense. -- "vanity"/user experience validation is done in javascript
             // any validation done here is just to avoid errors and malicious entries, so no need to check if the email, phone number etc are real here too. If a user has turned off javascript
@@ -220,7 +226,7 @@ namespace SocialApp.Pages
             }
             else updateProfileMessage.InnerText = "Input Error";
 
-            //ScriptManager.RegisterStartupScript(CreatePage, CreatePage.GetType(), "pageColourProfile" + CreatePage.UniqueID, @"changeCurrentPage(""profile"");", true);
+            //ScriptManager.RegisterStartupScript(CreatePage, CreatePage.GetType(), "pageColourProfile" + CreatePage.UniqueID, @"changeCurrentPage(""profile"");", true);*/
         }
 
 

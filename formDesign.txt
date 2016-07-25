@@ -1,0 +1,4 @@
+List titles across top
+grey unactive
+bold active
+column setup: names across top, dynamic centre and update/create button on bottom

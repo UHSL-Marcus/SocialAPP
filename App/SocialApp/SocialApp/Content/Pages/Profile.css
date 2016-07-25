@@ -7,5 +7,62 @@
 .profile-box {width: 46.6%; /*max-width: 560px;*/ max-height:80%; padding-top: 0.8%; padding-left: 0.8%; padding-right: 0.8%;}
 #lifestyle {height:80%;}
 
+.section-heading {
+    font-size: 3em;
+    color:lightgrey;
+    cursor: pointer;
+}
+.section-heading-mouseover {
+    color:darkgray;
+}
+.section-heading-active {
+    color:black;
+}
+
+.text-input{
+    margin-top: 2px;
+    border: 0;
+    border-bottom: 1px solid black;
+    font-size:1.5em;
+}
+.text-input.has-success {
+    border-color:green
+}
+.text-input.has-failure {
+    border-color:red
+}
+
+.text-input:focus{
+    border-color: #1e9ce6;
+    outline: 0;
+}
+
+.gender-group {
+    padding:2%;
+}
+
+.gender-label {
+    font-weight:500;
+    margin:1%;
+    margin-bottom:0;
+    font-size:1.5em;
+}
+
+.dob-input {
+    font-size:1.5em;
+}
+
+.misc-text{
+    font-size:1.5em;
+}
+
+.glyph-padding {
+    padding-top:4%;
+}
+
+.glyphicon-ok { color:green}
+.glyphicon-remove { color: red}
+
+
 
 

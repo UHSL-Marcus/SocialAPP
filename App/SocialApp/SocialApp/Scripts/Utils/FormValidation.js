@@ -115,19 +115,17 @@ function textRequired(eID, count) {
 // Shows and hides the required boostrap elements and adds the required bootstrap classes for success
 // takes the object being validated (eID)
 function addSuccess(eID) {
-    addClass(eID.siblings('.glyphicon-remove'), ["hidden"]);
-    removeClass(eID.siblings('.glyphicon-ok'), ["hidden"]);
-    addClass(eID.closest('.form-group'), ["has-success"]);
-    removeClass(eID.closest('.form-group'), ["has-error"]);
+    eID.siblings('.glyphicon-remove').addClass("hidden");
+    eID.siblings('.glyphicon-ok').removeClass("hidden");
+    eID.addClass("has-success").removeClass("has-failure");
 }
 
 // Shows and hides the required boostrap elements and adds the required bootstrap classes for failure/error
 // takes the object being validated (eID)
 function addError(eID) {
-    addClass(eID.siblings('.glyphicon-ok'), ["hidden"]);
-    removeClass(eID.siblings('.glyphicon-remove'), ["hidden"]);
-    addClass(eID.closest('.form-group'), ["has-error"]);
-    removeClass(eID.closest('.form-group'), ["has-success"]);
+    eID.siblings('.glyphicon-ok').addClass("hidden");
+    eID.siblings('.glyphicon-remove').removeClass("hidden");
+    eID.addClass("has-failure").removeClass("has-success");
 }
 
 // defensive method to make sure a class is only added once (not sure if jquery has that built in or not), and allows more than one class to be added 
