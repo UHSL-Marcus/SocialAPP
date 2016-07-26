@@ -40,16 +40,35 @@ namespace BRE_WebService
         }
 
         [WebMethod]
+        public int GetUserID(string Username, string Password)
+        {
+            sqlcon.Open();
+            SqlCommand com = new SqlCommand("SELECT UserID FROM BRE_User WHERE Username='" + Username + "' and Password='" + Password + "'", sqlcon);
+            SqlDataReader sr = com.ExecuteReader();
+
+            int id = -1;
+            while (sr.Read())
+            {
+                id = sr.GetInt32(0);
+            }
+
+            sqlcon.Close();
+
+            return id;
+            
+        }
+
+        [WebMethod]
         public User GetUser(string Username, string Password)
         {
             sqlcon.Open();
             SqlCommand com = new SqlCommand("SELECT * FROM BRE_User WHERE Username='" + Username + "' and Password='" + Password + "'", sqlcon);
             SqlDataReader sr = com.ExecuteReader();
 
+            User userDetails = new User();
             while (sr.Read())
             {
-                User userDetails = new User();
-
+                
                 userDetails.UserID = sr.GetInt32(0);
                 userDetails.Firstname = sr.GetString(1);
                 userDetails.Surname = sr.GetString(2);
@@ -64,30 +83,25 @@ namespace BRE_WebService
                 userDetails.Town = sr.GetString(10);
                 userDetails.Postcode = sr.GetString(11);
 
-                userDetails.Category_1 = sr.GetInt32(12);
-                userDetails.Category_2 = sr.GetInt32(13);
-                userDetails.Category_3 = sr.GetInt32(14);
-                userDetails.Category_4 = sr.GetInt32(15);
-                userDetails.Category_5 = sr.GetInt32(16);
-                userDetails.Category_6 = sr.GetInt32(17);
-                userDetails.Category_7 = sr.GetInt32(18);
-                userDetails.Category_8 = sr.GetInt32(19);
-                userDetails.Category_9 = sr.GetInt32(20);
-                userDetails.Category_10 = sr.GetInt32(21);
-                userDetails.Category_11 = sr.GetInt32(22);
-                userDetails.Category_12 = sr.GetInt32(23);
-                userDetails.Category_13 = sr.GetInt32(24);
-                userDetails.Category_14 = sr.GetInt32(25);
-                userDetails.Category_15 = sr.GetInt32(26);
-                userDetails.Category_16 = sr.GetInt32(27);
-                userDetails.Category_17 = sr.GetInt32(28);
-
-                sqlcon.Close();
-                return userDetails;
             }
 
             sqlcon.Close();
-            return new User();
+            sqlcon.Open();
+            SqlCommand com2 = new SqlCommand("SELECT Category.CategoryID, Category.CategoryName, UserCategoryPair.CategoryValue FROM Category JOIN UserCategoryPair on Category.CategoryID=UserCategoryPair.CategoryID WHERE UserCategoryPair.UserID='" + userDetails.UserID + "'", sqlcon);
+            SqlDataReader sr2 = com2.ExecuteReader();
+
+            while (sr2.Read())
+            {
+                CategoryInfo info = new CategoryInfo();
+                info.CategoryID = sr2.GetInt32(0);
+                info.CategoryName = sr2.GetString(1);
+                info.CategoryValue = sr2.GetInt32(2);
+
+                userDetails.Categories.Add(info);
+            }
+
+            sqlcon.Close();
+            return userDetails;
         }
 
         [WebMethod]
@@ -628,7 +642,7 @@ namespace BRE_WebService
             {
                 sqlcon.Open();
 
-                SqlCommand com = new SqlCommand("INSERT into BRE_User (FirstName, Surname, Gender, DateOfBirth, Email, Username, Password, [HouseNumber/Name], Address, Town, Postcode, Category_1, Category_2, Category_3, Category_4, Category_5, Category_6, Category_7, Category_8, Category_9, Category_10, Category_11, Category_12, Category_13, Category_14, Category_15, Category_16, Category_17) values('" +
+                SqlCommand com = new SqlCommand("INSERT into BRE_User (FirstName, Surname, Gender, DateOfBirth, Email, Username, Password, [HouseNumber/Name], Address, Town, Postcode) values('" +
                     UserDetails.Firstname + "','" +
                     UserDetails.Surname + "','" +
                     UserDetails.Gender + "','" +
@@ -640,31 +654,59 @@ namespace BRE_WebService
                     UserDetails.HouseNumberName + "','" +
                     UserDetails.Address + "','" +
                     UserDetails.Town + "','" +
-                    UserDetails.Postcode + "','" +
-
-                    UserDetails.Category_1 + "','" +
-                    UserDetails.Category_2 + "','" +
-                    UserDetails.Category_3 + "','" +
-                    UserDetails.Category_4 + "','" +
-                    UserDetails.Category_5 + "','" +
-                    UserDetails.Category_6 + "','" +
-                    UserDetails.Category_7 + "','" +
-                    UserDetails.Category_8 + "','" +
-                    UserDetails.Category_9 + "','" +
-                    UserDetails.Category_10 + "','" +
-                    UserDetails.Category_11 + "','" +
-                    UserDetails.Category_12 + "','" +
-                    UserDetails.Category_13 + "','" +
-                    UserDetails.Category_14 + "','" +
-                    UserDetails.Category_15 + "','" +
-                    UserDetails.Category_16 + "','" +
-                    UserDetails.Category_17 + "')", sqlcon);
+                    UserDetails.Postcode + "')", sqlcon);
 
                 int i = com.ExecuteNonQuery();
                 sqlcon.Close();
                 if (i != 0)
-                    UploadSuccess = true;
+                {
+                    int id = GetUserID(UserDetails.Username, UserDetails.Password);
+                    if (id > -1)
+                    {
+                        bool anyfail = false;
+                        foreach (CategoryInfo catInfo in UserDetails.Categories)
+                        {
+                            UserCategoryPair catPair = new UserCategoryPair();
+                            catPair.CategoryID = catInfo.CategoryID;
+                            catPair.UserID = UserDetails.UserID;
+                            catPair.CategoryValue = catInfo.CategoryValue;
+
+                            if (!SetNewUserCategoryPair(catPair))
+                            {
+                                anyfail = true;
+                                break;
+                            }
+                        }
+
+                        // if any failed, delete everything 
+                        if (anyfail)
+                        {
+                            UserDetails.UserID = id;
+                            DeleteUser(UserDetails);
+                        }
+                        else
+                            UploadSuccess = true;
+                    }
+                }
             }
+            return UploadSuccess;
+        }
+
+        [WebMethod]
+        public bool SetNewUserCategoryPair(UserCategoryPair userCategoryPair)
+        {
+            bool UploadSuccess = false;
+
+            sqlcon.Open();
+            SqlCommand com = new SqlCommand("INSERT into UserCategoryPair (UserID, CategoryID, CategoryValue) values('" +
+                userCategoryPair.UserID + "', '" + userCategoryPair.CategoryID + "', '" + userCategoryPair.CategoryValue + "')", sqlcon);
+
+
+            int i = com.ExecuteNonQuery();
+            sqlcon.Close();
+            if (i != 0)
+                UploadSuccess = true;
+
             return UploadSuccess;
         }
 
@@ -817,14 +859,15 @@ namespace BRE_WebService
             bool UploadSuccess = false;
 
             sqlcon.Open();
-            SqlCommand com = new SqlCommand("UPDATE BRE_User SET FirstName='" + UserDetails.Firstname + "', Surname='" + UserDetails.Surname + "', Gender='" + UserDetails.Gender + "', DateOfBirth='" + UserDetails.DateOfBirth.ToString("yyyy-MM-dd") + "', Email='" + UserDetails.Email + "', Username='" + UserDetails.Username + "',  Password='" + UserDetails.Password + "', [HouseNumber/Name]='" + UserDetails.HouseNumberName + "', Address='" + UserDetails.Address + "', Town='" + UserDetails.Town + "', Postcode='" + UserDetails.Postcode + "', Category_1='" + UserDetails.Category_1 + "', Category_2='" + UserDetails.Category_2 + "', Category_3='" + UserDetails.Category_3 + "', Category_4='" + UserDetails.Category_4 + "', Category_5='" + UserDetails.Category_5 + "', Category_6='" + UserDetails.Category_6 + "', Category_7='" + UserDetails.Category_7 + "', Category_8='" + UserDetails.Category_8 + "', Category_9='" + UserDetails.Category_9 + "', Category_10='" + UserDetails.Category_10 + "', Category_11='" + UserDetails.Category_11 + "', Category_12='" + UserDetails.Category_12 + "', Category_13='" + UserDetails.Category_13 + "', Category_14='" + UserDetails.Category_14 + "', Category_15='" + UserDetails.Category_15 + "', Category_16='" + UserDetails.Category_16 + "', Category_17='" + UserDetails.Category_17 + "' WHERE UserID='" + UserDetails.UserID + "'", sqlcon);
+            SqlCommand com = new SqlCommand("UPDATE BRE_User SET FirstName='" + UserDetails.Firstname + "', Surname='" + UserDetails.Surname + "', Gender='" + UserDetails.Gender + "', DateOfBirth='" + UserDetails.DateOfBirth.ToString("yyyy-MM-dd") + "', Email='" + UserDetails.Email + "', Username='" + UserDetails.Username + "',  Password='" + UserDetails.Password + "', [HouseNumber/Name]='" + UserDetails.HouseNumberName + "', Address='" + UserDetails.Address + "', Town='" + UserDetails.Town + "', Postcode='" + UserDetails.Postcode + "'", sqlcon);
 
             int i = com.ExecuteNonQuery();
             sqlcon.Close();
-            if (i == 0)
-                UploadSuccess = false;
-            else
-                UploadSuccess = true;
+            if (i != 0)
+            {
+
+            }
+            
 
             return UploadSuccess;
         }
@@ -1028,12 +1071,13 @@ namespace BRE_WebService
 
             sqlcon.Open();
             SqlCommand com = new SqlCommand("DELETE FROM BRE_User WHERE UserID='" + UserID.UserID + "'", sqlcon);
+            SqlCommand com2 = new SqlCommand("DELETE FROM UserCategoryPair WHERE UserID='" + UserID.UserID + "'", sqlcon);
 
             int i = com.ExecuteNonQuery();
+            int i2 = com2.ExecuteNonQuery();
+
             sqlcon.Close();
-            if (i == 0)
-                UploadSuccess = false;
-            else
+            if (i != 0 && i2 != 0)
                 UploadSuccess = true;
 
             return UploadSuccess;
@@ -1195,24 +1239,20 @@ namespace BRE_WebService
                 userDetails.Town = Data.GetString(10);
                 userDetails.Postcode = Data.GetString(11);
 
-                //TODO: maybe not hardcode this? might make profile page a bit more challenging
-                userDetails.Category_1 = Data.GetInt32(12);
-                userDetails.Category_2 = Data.GetInt32(13);
-                userDetails.Category_3 = Data.GetInt32(14);
-                userDetails.Category_4 = Data.GetInt32(15);
-                userDetails.Category_5 = Data.GetInt32(16);
-                userDetails.Category_6 = Data.GetInt32(17);
-                userDetails.Category_7 = Data.GetInt32(18);
-                userDetails.Category_8 = Data.GetInt32(19);
-                userDetails.Category_9 = Data.GetInt32(20);
-                userDetails.Category_10 = Data.GetInt32(21);
-                userDetails.Category_11 = Data.GetInt32(22);
-                userDetails.Category_12 = Data.GetInt32(23);
-                userDetails.Category_13 = Data.GetInt32(24);
-                userDetails.Category_14 = Data.GetInt32(25);
-                userDetails.Category_15 = Data.GetInt32(26);
-                userDetails.Category_16 = Data.GetInt32(27);
-                userDetails.Category_17 = Data.GetInt32(28);
+                sqlcon.Open();
+                SqlCommand com2 = new SqlCommand("SELECT Category.CategoryID, Category.CategoryName, UserCategoryPair.CategoryValue FROM Category JOIN UserCategoryPair on Category.CategoryID=UserCategoryPair.CategoryID WHERE UserCategoryPair.UserID='" + userDetails.UserID + "'", sqlcon);
+                SqlDataReader sr2 = com2.ExecuteReader();
+
+                while (sr2.Read())
+                {
+                    CategoryInfo info = new CategoryInfo();
+                    info.CategoryID = sr2.GetInt32(0);
+                    info.CategoryName = sr2.GetString(1);
+                    info.CategoryValue = sr2.GetInt32(2);
+
+                    userDetails.Categories.Add(info);
+                }
+                sqlcon.Close();
 
                 listOfUsers.Add(userDetails);
             }

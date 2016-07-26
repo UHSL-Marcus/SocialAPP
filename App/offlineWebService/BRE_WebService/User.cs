@@ -22,22 +22,14 @@ namespace BRE_WebService
         public string Town { get; set; }
         public string Postcode { get; set; }
 
-        public int Category_1 { get; set; }
-        public int Category_2 { get; set; }
-        public int Category_3 { get; set; }
-        public int Category_4 { get; set; }
-        public int Category_5 { get; set; }
-        public int Category_6 { get; set; }
-        public int Category_7 { get; set; }
-        public int Category_8 { get; set; }
-        public int Category_9 { get; set; }
-        public int Category_10 { get; set; }
-        public int Category_11 { get; set; }
-        public int Category_12 { get; set; }
-        public int Category_13 { get; set; }
-        public int Category_14 { get; set; }
-        public int Category_15 { get; set; }
-        public int Category_16 { get; set; }
-        public int Category_17 { get; set; }
-}
+        public List<CategoryInfo> Categories { get; set; }
+        
+    }
+
+    public class CategoryInfo
+    {
+        public int CategoryID { get; set; }
+        public string CategoryName { get; set; }
+        public int CategoryValue { get; set; }
+    }
 }

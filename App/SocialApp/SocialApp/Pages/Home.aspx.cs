@@ -58,13 +58,13 @@ namespace SocialApp.Pages
 
         protected void loginBtn_Click(object sender, EventArgs e)
         {
-            String SOAPbdy = "<Username>" + userIn.Value + "</Username><Password>" + passwordIn.Value + "</Password>";
+            string SOAPbdy = "<Username>" + userIn.Value + "</Username><Password>" + passwordIn.Value + "</Password>";
             HTTPRequest req = new HTTPRequest();
-            String response = req.HttpSOAPRequest(SOAPbdy, "GetUser");
+            string response = req.HttpSOAPRequest(SOAPbdy, "GetUser");
 
-            String uIDs = (new XMLParse(response, SOAPRequest.soapNamespace)).getElementText("UserID");
+            string uIDs = (new XMLParse(response, SOAPRequest.soapNamespace)).getElementText("UserID");
             int uID = 0;
-            Int32.TryParse(uIDs, out uID);
+            int.TryParse(uIDs, out uID);
 
             if (uID > 0)
             {

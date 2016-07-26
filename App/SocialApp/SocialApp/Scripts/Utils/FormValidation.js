@@ -1,30 +1,26 @@
 ﻿// triggers the change event in every input to cause validation
-function validateAll(div) {
-    //$(".tab-pane").find(".form-group").children(".form-control").trigger("change");
-
-    $('#' + div).find(".tab-pane").each(function () {
-        $(this).find(".form-group").each(function () {
-            $(this).children(".form-control").trigger("blur");
-        });
-    });
+function validateAll(identifier) {
+    $(identifier).find("*").blur();
 }
 
-// checks each input in a form (eg .form-horizontal) tallys up the errors for display on the tabs
-// returns true or false if there is at least one error or no errors repectivly. 
-function groupValidation(eID) {
+// checks each input and tallys up the errors for display
+// Adds has-failure to infoElement and returns false if there is atleast 1 element
+function groupValidation(eID, infoElement) {
+
+    clearFeedback(infoElement);
+
     var errors = 0;
-    eID.find(".form-group").each(function () {
-        if ($(this).hasClass("has-error"))
+    eID.find("*").each(function () {
+        if ($(this).hasClass("has-failure"))
             errors++;
     });
 
     if (errors > 0) {
-        $("#" + eID.attr("id") + "Error").text("" + errors + ""); // add the error count to the bootstrap graphic
-        return true;
+        infoElement.addClass("has-failure") // add the error class
+        return false;
     }
 
-    $("#" + eID.attr("id") + "Error").text(""); // set the error count to blank
-    return false;
+    return true;
 }
 
 // for now this just sets all the inputs to 5
@@ -51,7 +47,7 @@ function selectionRequired(eID, sibs) {
         }
     })
 
-    // add the bootstrap error or sucess classes
+    // add the bootstrap error or success classes
     if (valid) e.each(function () { addSuccess($(this)) });
     else e.each(function () { addError($(this)) });
 }
@@ -81,17 +77,22 @@ function postCodeRequired(eID) {
 }
 
 // pair validation, checks if two inputs have the same value
-// takes the object being validated (eID), the object to compare to (eID2) and whether blank in an automatic fail or not (notBlank) 
-function textEqual(eID, eID2, notBlank) {
-    if (eID.val() == "") {
-        if (notBlank)   // if blank is an automatic fail, add the fail class and exit the function
-            addError(eID);
-        return
+// takes the object being validated (eID), the object to compare to (eID2), skip if both are blank (ignoreBlank)
+function textEqual(eID, eID2, ignoreBlank) {
+
+    if (ignoreBlank) {
+        if (eID.val() == "" && eID2.val() == "")
+            return;
     }
 
-    if (eID.val() == eID2.val())
+    if (eID.val() == eID2.val()) {
         addSuccess(eID);
-    else addError(eID);
+        addSuccess(eID2);
+    }
+    else {
+        addError(eID);
+        addError(eID2);
+    }
 }
 
 // validate Email using a fairly comprehensive regex
@@ -128,20 +129,8 @@ function addError(eID) {
     eID.addClass("has-failure").removeClass("has-success");
 }
 
-// defensive method to make sure a class is only added once (not sure if jquery has that built in or not), and allows more than one class to be added 
-// takes the object reciving the class(es) (id) and an array of classes to add (classIDs)
-function addClass(id, classIDs) {
-    for (var i = 0; i < classIDs.length; i++) {
-        if (!id.hasClass(classIDs[i]))
-            id.addClass(classIDs[i]);
-    }
-}
-
-// defensive method to makesure a class is only removed when that class is pressent (not sure if jquery has that built in or not) and allows more than one class to be removed
-// takes the object losing the class(es) (id) and an array of classes to remove (classIDs)
-function removeClass(id, classIDs) {
-    for (var i = 0; i < classIDs.length; i++) {
-        if (id.hasClass(classIDs[i]))
-            id.removeClass(classIDs[i]);
-    }
+function clearFeedback(eID) {
+    eID.removeClass("has-failure").removeClass("has-success");
+    eID.siblings('.glyphicon-ok').addClass("hidden");
+    eID.siblings('.glyphicon-remove').addClass("hidden");
 }

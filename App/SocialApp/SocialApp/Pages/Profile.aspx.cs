@@ -1,5 +1,7 @@
 ﻿using SocialApp.Utils;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -15,27 +17,71 @@ namespace SocialApp.Pages
             thisMaster = Master as SiteMaster;
             thisMaster.setChild(this);
 
+            buildCategories();
             setProfileDetails();
-            ScriptManager.RegisterStartupScript(profileUpdatePanel, profileUpdatePanel.GetType(), "wireup" + UniqueID, "wireupHeadings();wireupProfileValidation();", true);
+            ScriptManager.RegisterStartupScript(profileUpdatePanel, profileUpdatePanel.GetType(), "wireup" + UniqueID, "wireupHeadings();wireupFormControls();wireupProfileValidation();", true);
+        }
+
+        private void buildCategories()
+        {
+            HTTPRequest req = new HTTPRequest();
+            string response = req.HttpSOAPRequest("", "GetListOfCategories");
+
+            XMLParse xml = new XMLParse(response, SOAPRequest.soapNamespace);
+
+            List<string> catSections = xml.getWholeSection("Category");
+
+
+            string categoryInputs = "";
+            Dictionary<string, string> cat_info = new Dictionary<string, string>();
+
+            foreach(string catSection in catSections)
+            {
+                XMLParse catXml = new XMLParse(catSection, SOAPRequest.soapNamespace);
+                string id = catXml.getElementText("CategoryID");
+                string name = catXml.getElementText("CategoryName");
+
+                string htmlLit = @"
+                                <div class=""flex-container"">
+                                    <div class=""misc-text single-line flex-1"">{0}</div>
+                                    <input runat=""server"" class=""input_range flex-1"" min=""1"" max=""10"" step=""1"" type=""range"" id=""category{1}"" data-id=""{1}"" value=""1"" />
+                                    <div class=""misc-text range_number"">01</div>
+                                </div>";
+                categoryInputs += string.Format(htmlLit, name, id);
+
+                cat_info.Add(id, name);
+            }
+
+            lifestyle_content.InnerHtml = categoryInputs;
+            Session[Paths.CAT_INFO] = cat_info;
         }
 
         private void setProfileDetails()
         {
             XMLParse xml = new XMLParse((string)Session[Paths.USERDETAILS], SOAPRequest.soapNamespace);
 
+            
+
+            // Personal Details
+            profilePersonalFName.Value = xml.getElementText("Firstname");
+            profilePersonalLName.Value = xml.getElementText("Surname");
+
+            string gender = xml.getElementText("Gender");
+            if (gender.Equals("Male", StringComparison.InvariantCultureIgnoreCase))
+                gender_male.Checked = true;
+
+            if (gender.Equals("Female", StringComparison.InvariantCultureIgnoreCase))
+                gender_female.Checked = true;
+            
+
             DateTime dob = DateTime.Parse(xml.getElementText("DateOfBirth"));
             DateMenu.setDateDropdown(profileSelMonth, profileSelYear, dob.Month, dob.Year);
             profileSelHiddenDay.Value = dob.Day.ToString();
             ScriptManager.RegisterStartupScript(profileUpdatePanel, profileUpdatePanel.GetType(), "setDay" + UniqueID, "setProfileDay();", true);
 
-            // Personal Details
-            /*profilePersonalFName.Value = xml.getElementText("Firstname");
-            profilePersonalLName.Value = xml.getElementText("Surname");
-            profileSelGender.SelectedValue = xml.getElementText("Gender");
-            DateTime dob = DateTime.Parse(xml.getElementText("DateOfBirth"));
-            DateMenu.setDateDropdown(profileSelMonth, profileSelYear, dob.Month, dob.Year);
-            profileSelHiddenDay.Value = dob.Day.ToString();
-            ScriptManager.RegisterStartupScript(profileUpdatePanel, profileUpdatePanel.GetType(), "setDay" + UniqueID, "setProfileDay();", true);
+            //Login Details
+            profileEmail.Value = xml.getElementText("Email");
+            profileUsername.Value = xml.getElementText("Username");
 
             // Contact Details
             profileHouseNumber.Value = xml.getElementText("HouseNumberName");
@@ -48,7 +94,7 @@ namespace SocialApp.Pages
             profileEmail.Value = xml.getElementText("Email");
             profileUsername.Value = xml.getElementText("Username");
 
-            //lifestyle details
+            /*/lifestyle details
             profileCat1.Value = xml.getElementText("Category_1");
             profileCat2.Value = xml.getElementText("Category_2");
             profileCat3.Value = xml.getElementText("Category_3");
@@ -73,12 +119,12 @@ namespace SocialApp.Pages
 
         private void validationError()
         {
-            ScriptManager.RegisterStartupScript(profileUpdatePanel, profileUpdatePanel.GetType(), "validate" + UniqueID, "validateAll('ProfilePage');", true);
+            ScriptManager.RegisterStartupScript(profileUpdatePanel, profileUpdatePanel.GetType(), "validate" + UniqueID, "validateAll(\".secton - content\");", true);
         }
 
         protected void updateProfile_Click(object sender, EventArgs e)
         {
-            /*updateProfileMessage.InnerText = "Validation Error";
+            updateProfileMessage.Text = "Validation Error";
 
             // validate all input -- not doing anything comprehesive yet, no SQL injection defense. -- "vanity"/user experience validation is done in javascript
             // any validation done here is just to avoid errors and malicious entries, so no need to check if the email, phone number etc are real here too. If a user has turned off javascript
@@ -92,10 +138,6 @@ namespace SocialApp.Pages
 
             if (valididateInfo(profilePersonalLName.Value))
                 SOAPbdy += "<Surname>" + profilePersonalLName.Value + "</Surname>";
-            else { validationError(); return; }
-
-            if (valididateInfo(profileSelGender.SelectedValue))
-                SOAPbdy += "<Gender>" + profileSelGender.SelectedValue + "</Gender>";
             else { validationError(); return; }
 
             if (valididateInfo(profileSelHiddenDay.Value) && valididateInfo(profileSelMonth.SelectedValue) && valididateInfo(profileSelYear.SelectedValue))
@@ -141,73 +183,31 @@ namespace SocialApp.Pages
                 SOAPbdy += "<Postcode>" + profilePostcode.Value + "</Postcode>";
             else { validationError(); return; }
 
-            if (valididateInfo(profileCat1.Value))
-                SOAPbdy += "<Category_1>" + profileCat1.Value + "</Category_1>";
-            else { validationError(); return; }
+            SOAPbdy += "<Categories>";
 
-            if (valididateInfo(profileCat2.Value))
-                SOAPbdy += "<Category_2>" + profileCat1.Value + "</Category_2>";
-            else { validationError(); return; }
-
-            if (valididateInfo(profileCat3.Value))
-                SOAPbdy += "<Category_3>" + profileCat1.Value + "</Category_3>";
-            else { validationError(); return; }
-
-            if (valididateInfo(profileCat4.Value))
-                SOAPbdy += "<Category_4>" + profileCat1.Value + "</Category_4>";
-            else { validationError(); return; }
-
-            if (valididateInfo(profileCat5.Value))
-                SOAPbdy += "<Category_5>" + profileCat1.Value + "</Category_5>";
-            else { validationError(); return; }
-
-            if (valididateInfo(profileCat6.Value))
-                SOAPbdy += "<Category_6>" + profileCat1.Value + "</Category_6>";
-            else { validationError(); return; }
-
-            if (valididateInfo(profileCat7.Value))
-                SOAPbdy += "<Category_7>" + profileCat1.Value + "</Category_7>";
-            else { validationError(); return; }
-
-            if (valididateInfo(profileCat8.Value))
-                SOAPbdy += "<Category_8>" + profileCat1.Value + "</Category_8>";
-            else { validationError(); return; }
-
-            if (valididateInfo(profileCat9.Value))
-                SOAPbdy += "<Category_9>" + profileCat1.Value + "</Category_9>";
-            else { validationError(); return; }
-
-            if (valididateInfo(profileCat10.Value))
-                SOAPbdy += "<Category_10>" + profileCat1.Value + "</Category_10>";
-            else { validationError(); return; }
-
-            if (valididateInfo(profileCat11.Value))
-                SOAPbdy += "<Category_11>" + profileCat1.Value + "</Category_11>";
-            else { validationError(); return; }
-
-            if (valididateInfo(profileCat12.Value))
-                SOAPbdy += "<Category_12>" + profileCat1.Value + "</Category_12>";
-            else { validationError(); return; }
-
-            if (valididateInfo(profileCat13.Value))
-                SOAPbdy += "<Category_13>" + profileCat1.Value + "</Category_13>";
-            else { validationError(); return; }
-
-            if (valididateInfo(profileCat14.Value))
-                SOAPbdy += "<Category_14>" + profileCat1.Value + "</Category_14>";
-            else { validationError(); return; }
-
-            if (valididateInfo(profileCat15.Value))
-                SOAPbdy += "<Category_15>" + profileCat1.Value + "</Category_15>";
-            else { validationError(); return; }
-
-            if (valididateInfo(profileCat16.Value))
-                SOAPbdy += "<Category_16>" + profileCat1.Value + "</Category_16>";
-            else { validationError(); return; }
-
-            if (valididateInfo(profileCat17.Value))
-                SOAPbdy += "<Category_17>" + profileCat1.Value + "</Category_17>";
-            else { validationError(); return; }
+            string[] catVals = lifestyle_info.Value.Split(',');
+            Dictionary<string, string> cat_info = (Dictionary<string, string>)Session[Paths.CAT_INFO];
+            foreach (string catValStr in catVals)
+            {
+                if(catValStr.Length > 0)
+                {
+                    string id = catValStr.Substring(0, 2);
+                    string catValue = catValStr.Substring(3, 2);
+                    string name;
+                    if (cat_info.TryGetValue(id, out name))
+                    {
+                        string html = @"
+                                        <CategoryInfo>
+                                            <CategoryID>{0}</CategoryID>
+                                            <CategoryName>{1}</CategoryName>
+                                            <CategoryValue>{2}</CategoryValue>
+                                        </CategoryInfo>";
+                        SOAPbdy += string.Format(html, id, name, catValue);
+                                
+                    }
+                }
+            }
+            SOAPbdy += "</Categories>";
             SOAPbdy += "</UserDetails>";
 
             HTTPRequest req = new HTTPRequest();
@@ -220,13 +220,12 @@ namespace SocialApp.Pages
 
             if (success)
             {
-                updateProfileMessage.InnerText = "";
-                profileResult.InnerText = "Profile updated sucessfully";
+                updateProfileMessage.Text = "Profile updated sucessfully";
                 Session[Paths.USERDETAILS] = @"<?xml version=""1.0"" encoding=""utf-8""?><soap:Envelope xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema""><soap:Body><GetUserResponse xmlns=""http://tempuri.org/""><GetUserResult>" + SOAPbdy + "</GetUserResult></GetUserResponse></soap:Body></soap:Envelope>";
             }
-            else updateProfileMessage.InnerText = "Input Error";
+            else updateProfileMessage.Text = "Input Error";
 
-            //ScriptManager.RegisterStartupScript(CreatePage, CreatePage.GetType(), "pageColourProfile" + CreatePage.UniqueID, @"changeCurrentPage(""profile"");", true);*/
+            //ScriptManager.RegisterStartupScript(CreatePage, CreatePage.GetType(), "pageColourProfile" + CreatePage.UniqueID, @"changeCurrentPage(""profile"");", true);
         }
 
 

@@ -13,14 +13,53 @@ function wireupHeadings() {
         $(this).addClass("section-heading-active");
         $(".secton-content").addClass("hidden");
         var headingID = $(this).attr('id');
-        var section = headingID.substring(0, headingID.search("-heading"));
+        var section = headingID.substring(0, headingID.search("_heading"));
 
-        $('#' + section + '-content').removeClass("hidden");
+        $('#' + section + '_content').removeClass("hidden");
 
         $('#selected_heading').val(section);
+
+        if ($(this).hasClass("section-hide-next")) 
+            $("#section_next_btn").addClass("hidden");
+        else 
+            $("#section_next_btn").removeClass("hidden");
+
     });
 
-    $('#' + $('#selected_heading').val() + '-heading').click();
+    $('#' + $('#selected_heading').val() + '_heading').click();
+}
+
+function wireupFormControls() {
+    $("#section_next_btn").click(function () {
+        $(".section-heading-active").next(".section-heading").click();
+    });
+
+    $(".input_range").on("input change", function () {
+        var num = $(this).val();
+        var num = num < 10 ? "0" + num : num;
+        $(this).siblings(".range_number").html(num);
+
+        var info = $('#lifestyle_info').val();
+        var id = $(this).data("id");
+        var id = id < 10 ? "0" + id : id;
+        var loc = info.search(id + ":");
+        var value = id + ":" + num;
+        var new_value;
+
+        if (loc > -1) {
+            var old_value = info.substring(loc, loc + 5);
+            new_value = info.replace(old_value, value);
+            
+        } else {
+            new_value = info + "," + value;
+        }
+
+        $('#lifestyle_info').val(new_value);
+
+    });
+
+    $(".input_range").trigger("input").trigger("change");
+
 
 }
 
@@ -29,12 +68,7 @@ function wireupProfileValidation() {
     // personal
     $('#profilePersonalFName, #profilePersonalLName').on("blur keyup change", function () {
         textRequired($(this), 1);
-        groupValidation($(this).closest(".tab-pane"));
-    });
-
-    $("#profileSelGender").on("blur change", function () {
-        selectionRequired($(this), "");
-        groupValidation($(this).closest(".tab-pane"));
+        closestSectionValidation($(this));
     });
 
     $("#profileSelYear, #profileSelMonth").on("blur change", function () {
@@ -42,53 +76,59 @@ function wireupProfileValidation() {
     });
 
     $("#profileSelYear, #profileSelMonth, #profileSelDay").on("blur change", function () {
-        selectionRequired($(this), '.profile-date');
-        groupValidation($(this).closest(".tab-pane"));
+        selectionRequired($(this), '.dob-input');
+        closestSectionValidation($(this));
         $("#profileSelHiddenDay").val($("#profileSelDay").val());
     });
 
     // contact
     $("#profileHouseNumber, #profileStreet, #profileTown").on("blur keyup change", function () {
         textRequired($(this), 1);
-        groupValidation($(this).closest(".tab-pane"));
+        closestSectionValidation($(this));
     });
     $("#profilePostcode").on("blur keyup change", function () {
         postCodeRequired($(this));
-        groupValidation($(this).closest(".tab-pane"));
+        closestSectionValidation($(this));
     });
     $("#profileTel").on("blur keyup change", function () {
         //telRequired($(this));
-        //groupValidation($(this).closest(".tab-pane"));
+        //closestSectionValidation($(this));
     });
 
     // login
     $("#profileEmail").on("blur keyup change", function () {
         emailRequired($(this));
-        groupValidation($(this).closest(".tab-pane"));
+        closestSectionValidation($(this));
     });
     $("#profileUsername").on("blur keyup change", function () {
         textRequired($(this), 1);
-        groupValidation($(this).closest(".tab-pane"));
+        closestSectionValidation($(this));
     });
 
     $("#profileConfPassword").on("blur keyup change", function () {
-        textEqual($(this), $("#profileChangePassword"), false);
-        groupValidation($(this).closest(".tab-pane"));
+        clearFeedback($(this));
+        clearFeedback($("#profileChangePassword"));
+        textEqual($(this), $("#profileChangePassword"), true);
+        closestSectionValidation($(this));
     });
 
     $("#profileChangePassword").on("blur keyup change", function () {
-        textEqual($("#profileConfPassword"), $(this), false);
-        groupValidation($(this).closest(".tab-pane"));
+        clearFeedback($(this));
+        clearFeedback($("#profileConfPassword"));
+        textEqual( $(this), $("#profileConfPassword"), true);
+        closestSectionValidation($(this));
     });
 
 
     // submit
-    $("#updateProfile").click(function () {
+    $("#profileUpdateBtn").click(function () {
         var valid = true;
-        validateAll("ProfilePage");
-        $('#ProfilePage').find(".tab-pane").siblings().each(function () {
-            if (groupValidation($(this)))
+        validateAll(".secton-content");
+        
+        $(".section-heading").each(function () {
+            if ($(this).hasClass("has-failure"))
                 valid = false;
+            return false;
         });
 
         if (valid) return true;
@@ -99,5 +139,14 @@ function wireupProfileValidation() {
 
 function setProfileDay() {
     changeDay('#profileSelDay', '#profileSelHiddenDay');
+}
+
+function closestSectionValidation(eID) {
+    var content_section = eID.closest(".secton-content");
+    
+    var contentID = content_section.attr('id');
+    var heading = contentID.substring(0, contentID.search("_content")) + "_heading";
+
+    groupValidation(content_section, $("#" + heading));
 }
 

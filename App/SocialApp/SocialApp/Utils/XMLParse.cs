@@ -111,9 +111,9 @@ namespace SocialApp.Utils
                 <element></element>
             </toplevelElement>
          */
-        public List<String> getWholeSection(String topLevelElement, bool includeParent = true)
+        public List<string> getWholeSection(string topLevelElement, bool includeParent = true)
         {
-            List<String> result = new List<String>();
+            List<string> result = new List<string>();
            
             XmlDocument xml = new XmlDocument();
             xml.LoadXml(XMLtoRead);

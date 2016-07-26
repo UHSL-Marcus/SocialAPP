@@ -1,13 +1,12 @@
 ﻿// fills the day dropdown in date of birth based on the month and year
 function fillDays(eID) {
 
-    var e = eID.siblings().addBack(); // grabs all three dropdowns
     var year;
     var mon;
     var day;
 
 
-    e.each(function () { // separates them out
+    eID.siblings(".dob-input").addBack().each(function () { // grabs all three dropdowns and separates them out
         if ($(this).attr('id').indexOf("SelYear") > -1)
             year = $(this);
         else if ($(this).attr('id').indexOf("SelMonth") > -1)
