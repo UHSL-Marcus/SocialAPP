@@ -81,7 +81,7 @@ namespace SocialApp.Pages
 
         protected void toggleCreate_Click(object sender, EventArgs e)
         {
-            Response.Redirect(Paths.PAGE_CREATE);
+            Response.Redirect(Paths.PAGE_PROFILE);
         }
     }
 }

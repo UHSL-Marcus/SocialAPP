@@ -40,6 +40,15 @@ namespace SocialApp.Pages {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl profileResult;
         
         /// <summary>
+        /// pageTitleLbl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label pageTitleLbl;
+        
+        /// <summary>
         /// profilePersonalFName control.
         /// </summary>
         /// <remarks>
@@ -64,7 +73,7 @@ namespace SocialApp.Pages {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputRadioButton gender_male;
+        protected global::System.Web.UI.WebControls.RadioButton gender_male;
         
         /// <summary>
         /// gender_female control.
@@ -73,7 +82,7 @@ namespace SocialApp.Pages {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputRadioButton gender_female;
+        protected global::System.Web.UI.WebControls.RadioButton gender_female;
         
         /// <summary>
         /// profileSelMonth control.
@@ -199,7 +208,7 @@ namespace SocialApp.Pages {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText lifestyle_info;
+        protected global::System.Web.UI.HtmlControls.HtmlInputHidden lifestyle_info;
         
         /// <summary>
         /// profileUpdateBtn control.
@@ -211,12 +220,21 @@ namespace SocialApp.Pages {
         protected global::System.Web.UI.WebControls.Button profileUpdateBtn;
         
         /// <summary>
-        /// updateProfileMessage control.
+        /// profileCreateBtn control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label updateProfileMessage;
+        protected global::System.Web.UI.WebControls.Button profileCreateBtn;
+        
+        /// <summary>
+        /// profileActionMessage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label profileActionMessage;
     }
 }

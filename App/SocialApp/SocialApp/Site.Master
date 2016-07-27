@@ -63,14 +63,14 @@
             <ContentTemplate>
                 <div class="flex-container flex-column">
                     <div class="flex-container flex-center">
-                        <asp:LinkButton runat="server" ID="userNameHeaderLbl" CssClass="nonAnimatedLink allowPointer" Text="Not Signed In" OnClick="userNameHeaderLbl_headerProfileBtn_Click" ClientIDMode="Static" ></asp:LinkButton>
+                        <asp:LinkButton runat="server" ID="userNameHeaderLbl" CssClass="headerLink allowPointer" Text="Not Signed In" OnClick="userNameHeaderLbl_headerProfileBtn_Click" ClientIDMode="Static" ></asp:LinkButton>
                         <asp:ImageButton runat="server" ID="headerProfileBtn" ImageUrl="/Resources/Icons/03-Profile.png" CssClass="allowPointer headerProfileBtn" OnClick="userNameHeaderLbl_headerProfileBtn_Click"
                              ClientIDMode="Static" />
                     </div>
                     <div class="flex-container">
                         <div class="flex-1"></div>
                         <div id="signoutBtnContainer" class="flex-container flex-center headerProfileWidth">
-                            <asp:LinkButton runat="server" ID="signOutBtn" Text="Sign Out" CssClass="nonAnimatedLink allowPointer" OnClick="signOutBtn_Click" ClientIDMode="Static" ></asp:LinkButton>
+                            <asp:LinkButton runat="server" ID="signOutBtn" Text="Sign Out" CssClass="headerLink allowPointer" OnClick="signOutBtn_Click" ClientIDMode="Static" ></asp:LinkButton>
                         </div>         
                     </div>
                 </div>
@@ -96,7 +96,7 @@
         
         <div class="mouseoverOverlayShowDiv bottomLeftOverlay"></div>
         <div class="mouseoverOverlayShowDivSide bottomLeftOverlay"></div>
-        <div class="overlay bottomLeftOverlay nonInteractive">
+        <div class="overlay bottomLeftOverlay nonInteractive footer">
             <p>&copy; <%: DateTime.Now.Year %> - BRE Social App</p>
         </div>
 

@@ -19,14 +19,17 @@
         <ContentTemplate>
             <input type="hidden" id="selected_heading" runat="server" value="personal" ClientIDMode="Static" />
             <!-- Profile Page -->
-            <div id="ProfilePage" class="content-padding flex-container flex-column flex-1" style="background-color: forestgreen">
+            <div id="ProfilePage" class="content-padding flex-container flex-column flex-1">
                 <Label runat="server" ID="profileResult"/> 
-                <div class="flex-1 flex-container flex-column flex-align-center" style="background-color: white">
+                <div class="flex-1 flex-container flex-column flex-align-center">
+                    <div class="flex-container">
+                        <asp:Label runat="server" ID="pageTitleLbl" CssClass="page-title"></asp:Label>
+                    </div>
                     <div class="flex-container">
                         <div id="personal_heading" class="section-heading">PERSONAL </div>
                         <div id="login_heading" class="section-heading">LOGIN </div>
                         <div id="contact_heading" class="section-heading">CONTACT </div>
-                        <div id="lifestyle_heading" class="section-heading section-hide-next">LIFESTYLE</div>
+                        <div id="lifestyle_heading" class="section-heading">LIFESTYLE</div>
                     </div>
                     <div="flex-container flex-column">
                         <div id="personal_content" class="secton-content hidden">
@@ -42,11 +45,11 @@
                             </div>
                             <div class="flex-container gender-group">
                                 <div class="gender-input flex-container flex-justify-center flex-align-center flex-1">
-                                    <input type="radio" value="None" name="gender" id="gender_male" runat="server" checked/>
+                                    <asp:RadioButton runat="server" GroupName="gender" ID="gender_male" />
                                     <label for="male" class="gender-label" >Male</label>
                                 </div>
                                 <div class="gender-input flex-container flex-justify-center flex-align-center flex-1">
-                                    <input type="radio" value="None" name="gender" id="gender_female" runat="server"/>
+                                    <asp:RadioButton runat="server" GroupName="gender" ID="gender_female" />
                                     <label for="female" class="gender-label">Female</label>
                                 </div>
                             </div>
@@ -109,15 +112,16 @@
                                 <span class="glyphicon glyphicon-remove hidden glyph-padding-textbox"></span>
                             </div>
                         </div>
-                        <div id="lifestyle_content" class="secton-content hidden" runat="server" ClientIDMode="Static">
+                        <div id="lifestyle_content" class="secton-content hidden section-hide-next" runat="server" ClientIDMode="Static">
                             
                             
                         </div>
-                        <input type="text" runat="server" ClientIDMode="Static" id="lifestyle_info"/>
+                        <input type="hidden" runat="server" ClientIDMode="Static" id="lifestyle_info"/>
                         <div class="flex-container">
                             <input type="button" id="section_next_btn" value="Next" />
                             <asp:Button runat="server" ID="profileUpdateBtn" ClientIDMode="Static" Text="Update" OnClick="updateProfile_Click"/>
-                            <asp:Label runat="server" ID="updateProfileMessage"></asp:Label>
+                            <asp:Button runat="server" ID="profileCreateBtn" ClientIDMode="Static" Text="Create" OnClick="profileCreateBtn_Click"/>
+                            <asp:Label runat="server" ID="profileActionMessage"></asp:Label>
                         </div>
                     </div>
                 </div>

@@ -62,7 +62,7 @@ namespace BRE_WebService
         public User GetUser(string Username, string Password)
         {
             sqlcon.Open();
-            SqlCommand com = new SqlCommand("SELECT * FROM BRE_User WHERE Username='" + Username + "' and Password='" + Password + "'", sqlcon);
+            SqlCommand com = new SqlCommand("SELECT * FROM BRE_User WHERE Username='" + Username + "' AND Password='" + Password + "'", sqlcon);
             SqlDataReader sr = com.ExecuteReader();
 
             User userDetails = new User();
@@ -82,6 +82,7 @@ namespace BRE_WebService
                 userDetails.Address = sr.GetString(9);
                 userDetails.Town = sr.GetString(10);
                 userDetails.Postcode = sr.GetString(11);
+                userDetails.Categories = new List<CategoryInfo>();
 
             }
 
@@ -145,6 +146,19 @@ namespace BRE_WebService
             }
 
             return numOfCategories;
+        }
+
+        [WebMethod]
+        public bool GetUserCategoryPairExists(UserCategoryPair userCategoryPair)
+        {
+            sqlcon.Open();
+            SqlCommand com = new SqlCommand("SELECT TOP 1 UserCategoryPair.Id FROM UserCategoryPair WHERE UserCategoryPair.CategoryID = '" + userCategoryPair.CategoryID + "' AND UserCategoryPair.UserID='" + userCategoryPair.UserID + "'", sqlcon);
+            SqlDataReader sr = com.ExecuteReader();
+
+            bool success = sr.HasRows;
+            sqlcon.Close();
+
+            return success;
         }
 
         # endregion
@@ -859,15 +873,54 @@ namespace BRE_WebService
             bool UploadSuccess = false;
 
             sqlcon.Open();
-            SqlCommand com = new SqlCommand("UPDATE BRE_User SET FirstName='" + UserDetails.Firstname + "', Surname='" + UserDetails.Surname + "', Gender='" + UserDetails.Gender + "', DateOfBirth='" + UserDetails.DateOfBirth.ToString("yyyy-MM-dd") + "', Email='" + UserDetails.Email + "', Username='" + UserDetails.Username + "',  Password='" + UserDetails.Password + "', [HouseNumber/Name]='" + UserDetails.HouseNumberName + "', Address='" + UserDetails.Address + "', Town='" + UserDetails.Town + "', Postcode='" + UserDetails.Postcode + "'", sqlcon);
+            SqlCommand com = new SqlCommand("UPDATE BRE_User SET FirstName='" + UserDetails.Firstname + "', Surname='" + UserDetails.Surname + "', Gender='" + UserDetails.Gender + "', DateOfBirth='" + UserDetails.DateOfBirth.ToString("yyyy-MM-dd") + "', Email='" + UserDetails.Email + "', Username='" + UserDetails.Username + "',  Password='" + UserDetails.Password + "', [HouseNumber/Name]='" + UserDetails.HouseNumberName + "', Address='" + UserDetails.Address + "', Town='" + UserDetails.Town + "', Postcode='" + UserDetails.Postcode + "' WHERE UserID='" + UserDetails.UserID + "'", sqlcon);
 
             int i = com.ExecuteNonQuery();
             sqlcon.Close();
             if (i != 0)
             {
+                bool anyfail = false;
+                foreach (CategoryInfo catInfo in UserDetails.Categories)
+                {
+                    UserCategoryPair catPair = new UserCategoryPair();
+                    catPair.CategoryID = catInfo.CategoryID;
+                    catPair.UserID = UserDetails.UserID;
+                    catPair.CategoryValue = catInfo.CategoryValue;
 
+                    if (GetUserCategoryPairExists(catPair))
+                    {
+                        if (!UpdateUserCategoryPair(catPair))
+                            anyfail = true;
+                    }
+                    else
+                    {
+                        if (!SetNewUserCategoryPair(catPair))
+                            anyfail = true;
+                    }
+                }
+
+                // success if none of the above failed
+                if (!anyfail)
+                    UploadSuccess = true;
             }
             
+
+            return UploadSuccess;
+        }
+
+        [WebMethod]
+        public bool UpdateUserCategoryPair(UserCategoryPair userCategoryPair)
+        {
+            bool UploadSuccess = false;
+
+            sqlcon.Open();
+            SqlCommand com = new SqlCommand("UPDATE UserCategoryPair SET CategoryValue='" + userCategoryPair.CategoryValue + "' WHERE UserID='" + userCategoryPair.UserID + "' AND CategoryID='" + userCategoryPair.CategoryID + "'", sqlcon);
+
+
+            int i = com.ExecuteNonQuery();
+            sqlcon.Close();
+            if (i != 0)
+                UploadSuccess = true;
 
             return UploadSuccess;
         }

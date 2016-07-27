@@ -28,11 +28,11 @@ namespace SocialApp.Pages
             if (Session[Paths.TOWNLIST] == null) statsTownList.Items.Add("No Towns"); // if something has gone wrong, still null
             else
             {
-                ArrayList towns = (new XMLParse((String)Session[Paths.TOWNLIST], SOAPRequest.soapNamespace)).getAllElementsText("Town");    // pull out all the town names
+                ArrayList towns = (new XMLParse((string)Session[Paths.TOWNLIST], SOAPRequest.soapNamespace)).getAllElementsText("Town");    // pull out all the town names
 
                 // add em to the options of the dropdown component, including home
                 statsTownList.Items.Add("Home");
-                foreach (String town in towns)
+                foreach (string town in towns)
                 {
                     statsTownList.Items.Add(town);
                 }
@@ -45,6 +45,8 @@ namespace SocialApp.Pages
         private void displayTownInfo(string town)
         {
             //TODO: Try Catch
+
+            XMLParse userInfo = new XMLParse((string)Session[Paths.USERDETAILS], SOAPRequest.soapNamespace);
 
             // grab the home town fo this user
             if (town.Equals("Home"))
@@ -74,6 +76,7 @@ namespace SocialApp.Pages
 
                 Dictionary<string, int> categoryRating = new Dictionary<string, int>();     // rating is based on service count, not google ratings
                 Dictionary<string, int> categoryVirtRating = new Dictionary<string, int>();
+                Dictionary<string, int> userProfileRatings = new Dictionary<string, int>(); // The ratings pulled from the user info
 
                 Dictionary<string, string> serviceModalHTML = new Dictionary<string, string>(); // the information modal, when a cagegory is clicked
                 Dictionary<string, int> serviceCount = new Dictionary<string, int>();           // the number of services with the same name, used to keep service ID's unique
@@ -85,14 +88,17 @@ namespace SocialApp.Pages
                     string categoryID = categoryCountXML.getElementText("CategoryID");
                     int rating = 0;
                     int ratingVirt = 0;
+                    int userRating = 0;
 
                     // pull out the virtual and general "rating", this is the normalised score based on service count
                     int.TryParse(categoryCountXML.getElementText("Normal"), out rating);
                     int.TryParse(categoryCountXML.getElementText("NormalVirt"), out ratingVirt);
+                    int.TryParse(userInfo.getElementFromSibling("CategoryInfo", "CategoryID", categoryID, "CategoryValue"), out userRating);
                     string categoryName = new XMLParse(req.HttpSOAPRequest("<CategoryID>" + categoryID + "</CategoryID>", "GetCategoryByID"), SOAPRequest.soapNamespace).getElementText("CategoryName");
 
                     categoryRating.Add(categoryName, rating);
                     categoryVirtRating.Add(categoryName, ratingVirt);
+                    userProfileRatings.Add(categoryName, userRating);
 
                     // grab all the services for this category and town
                     List<string> servicesXML = new XMLParse(req.HttpSOAPRequest("<CategoryID>" + categoryID + "</CategoryID><TownID>" + tID + "</TownID>", "GetAllServicesByTownAndCategoryID"), SOAPRequest.soapNamespace).getWholeSection("AllServiceInfo");
@@ -153,28 +159,6 @@ namespace SocialApp.Pages
                 {
                     statExpandModalBody.InnerHtml = html + statExpandModalBody.InnerHtml;
                 }
-
-                Dictionary<string, int> userProfileRatings = new Dictionary<string, int>();
-
-                XMLParse userInfo = new XMLParse((string)Session[Paths.USERDETAILS], SOAPRequest.soapNamespace);
-
-                userProfileRatings.Add("Education", int.Parse(userInfo.getElementText("Category_1")));
-                userProfileRatings.Add("Transport", int.Parse(userInfo.getElementText("Category_2")));
-                userProfileRatings.Add("Entertainment", int.Parse(userInfo.getElementText("Category_3")));
-                userProfileRatings.Add("Disposal", int.Parse(userInfo.getElementText("Category_4")));
-                userProfileRatings.Add("Local Economy", int.Parse(userInfo.getElementText("Category_5")));
-                userProfileRatings.Add("Comms & Soc Conn", int.Parse(userInfo.getElementText("Category_6")));
-                userProfileRatings.Add("Well being", int.Parse(userInfo.getElementText("Category_7")));
-                userProfileRatings.Add("Psychological", int.Parse(userInfo.getElementText("Category_8")));
-                userProfileRatings.Add("Recog", int.Parse(userInfo.getElementText("Category_9")));
-                userProfileRatings.Add("Health", int.Parse(userInfo.getElementText("Category_10")));
-                userProfileRatings.Add("Saftey Sec", int.Parse(userInfo.getElementText("Category_11")));
-                userProfileRatings.Add("Consum", int.Parse(userInfo.getElementText("Category_12")));
-                userProfileRatings.Add("Enviro Perf", int.Parse(userInfo.getElementText("Category_13")));
-                userProfileRatings.Add("Biodi", int.Parse(userInfo.getElementText("Category_14")));
-                userProfileRatings.Add("Govern", int.Parse(userInfo.getElementText("Category_15")));
-                userProfileRatings.Add("Shelter", int.Parse(userInfo.getElementText("Category_16")));
-                userProfileRatings.Add("Emotional Well", int.Parse(userInfo.getElementText("Category_17")));
 
                 string userProfileRatingsJSON = JsonConvert.SerializeObject(userProfileRatings);                                                      // convert all dictionaries to JSON Strings
                 string townRatingsJSON = JsonConvert.SerializeObject(categoryRating);

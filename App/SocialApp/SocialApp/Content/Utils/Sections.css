@@ -1,0 +1,11 @@
+﻿.section-heading {
+    font-size: 3em;
+    color:rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+}
+.section-heading-mouseover {
+    color:rgba(255, 255, 255, 0.9);
+}
+.section-heading-active {
+    color:rgba(255, 255, 255, 1);
+}

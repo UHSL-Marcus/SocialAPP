@@ -21,6 +21,7 @@ namespace SocialApp
                            "~/Scripts/Utils/jsonStringify.js",
                            "~/Scripts/Utils/headerHider.js",
                            "~/Scripts/Utils/ModalPosition.js",
+                           "~/Scripts/Utils/Sections.js",
                            "~/Scripts/Utils/Misc.js",
                            "~/Scripts/Pages/Master.js"
                            ));
@@ -31,6 +32,7 @@ namespace SocialApp
                             "~/Content/Utils/Positioning.css",
                             "~/Content/Utils/HideHeader.css",
                             "~/Content/Utils/ModalCentre.css",
+                            "~/Content/Utils/Sections.css",
                             "~/Content/Pages/Master.css"
                             ));
 

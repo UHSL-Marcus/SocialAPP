@@ -42,7 +42,7 @@ namespace SocialApp.Utils
         // Element: element to search for. Will return the value of the first element with the given name
         // parent: if the element is under a specific parent element (used if there is an element of the same name, in higher levels)
         // wrapper: return the data wrapped in a parent element, to keep the reply as valid XML
-        public String getElementText(String element, String parent = null, bool wrapper = false)
+        public string getElementText(string element, string parent = null, bool wrapper = false)
         {
             XmlDocument xml = new XmlDocument();
             xml.LoadXml(XMLtoRead);

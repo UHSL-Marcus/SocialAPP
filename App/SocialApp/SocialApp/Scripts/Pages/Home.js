@@ -1,6 +1,7 @@
 ﻿
 
 $(document).ready(function () {
+    hideBackBtn();
 });
 
 function wireUp_LoginEvents() {

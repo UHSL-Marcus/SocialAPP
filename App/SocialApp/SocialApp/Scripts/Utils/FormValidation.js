@@ -78,11 +78,16 @@ function postCodeRequired(eID) {
 
 // pair validation, checks if two inputs have the same value
 // takes the object being validated (eID), the object to compare to (eID2), skip if both are blank (ignoreBlank)
-function textEqual(eID, eID2, ignoreBlank) {
+function textEqual(eID, eID2, ignoreBlank, blankFails) {
 
     if (ignoreBlank) {
-        if (eID.val() == "" && eID2.val() == "")
+        if (eID.val() == "" && eID2.val() == "") {
+            if (blankFails) {
+                addError(eID);
+                addError(eID2);
+            }
             return;
+        }
     }
 
     if (eID.val() == eID2.val()) {

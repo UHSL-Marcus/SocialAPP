@@ -36,3 +36,7 @@ function hideSignoutBtn(hide) {
     if (hide) $('#signOutBtn').hide();
     else $('#signOutBtn').show();
 }
+
+function hideBackBtn() {
+    $("#homeBtn").addClass("hidden");
+}

@@ -1,8 +1,8 @@
 ﻿.fill {height:100%; width:100%;}
 
-.allowPointer {pointer-events:all;}
-
 .nonInteractive {pointer-events: none;}
+
+.allowPointer {pointer-events: auto;}
 
 input:disabled {
     color:gray

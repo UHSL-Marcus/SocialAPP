@@ -13,17 +13,6 @@ function LoadStats(userRatingsJson, townRatingsJson, townVirtRatingsJson) {
     if (townRatingsJson) townRatings = townRatingsJson;
     if (townVirtRatingsJson) townVirtRatings = townVirtRatingsJson;
 
-    // when any of the left hand tabs are clicked, save the ID, so that on postback tab position is not lost 
-    $('#statsTabs').children().on('shown.bs.tab', function (e) {
-        var s = String(e.target);
-        statsCurrentTab = s.substring(s.indexOf("/#") + 1, s.length);
-    })
-
-    // if a current tab position has been saved, move the active tab to that position, used after postback to retain tab position
-    if (statsCurrentTab.length > 0) {
-        $('#statsTabs a[href="' + statsCurrentTab + '"]').tab('show');
-    }
-
     // when the modal is loaded up, set the correct title and show the section required
     $('#statExpandModal').on('show.bs.modal', function () {
         var section = $('#statExpandModal').data("cat")
@@ -279,7 +268,7 @@ function LoadStats(userRatingsJson, townRatingsJson, townVirtRatingsJson) {
     }
 
     // called when ever the tab is swiched
-    $('a[data-toggle="pill"]').on('shown.bs.tab', function () {
+    $(".section-content").on("section:visible", function () {
         $(".statGraphContainer").each(function () {
             $(this).CanvasJSChart().render();
         });
@@ -292,7 +281,7 @@ function LoadStats(userRatingsJson, townRatingsJson, townVirtRatingsJson) {
 
     // hide and show the data groups when the cycle buttons are clicked
     $('.statGraphSwap').click(function () {
-        statsCurrentDataPoints = statsCurrentDataPoints + 1 % 2;
+        statsCurrentDataPoints = (statsCurrentDataPoints + 1) % 2;
         $('.statGraphContainer').each(function () {
             var data = $(this).CanvasJSChart().options.data;
             for (var i = 0; i < data.length; i++) {

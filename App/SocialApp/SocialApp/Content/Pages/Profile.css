@@ -1,50 +1,41 @@
 ﻿
+.background {background-color: #1ba1e2;}
 
-.profile-text-box {width:50%;}
-.profile-gender {width:25%; margin-right:25%;}
-.profile-date {width:16.7%;}
-.profile-centre { width:70%; max-height:90% /*max-width: 1200px;*/}
-.profile-box {width: 46.6%; /*max-width: 560px;*/ max-height:80%; padding-top: 0.8%; padding-left: 0.8%; padding-right: 0.8%;}
-#lifestyle {height:80%;}
 
-.section-heading {
+.page-title {
     font-size: 3em;
-    color:lightgrey;
-    cursor: pointer;
-}
-.section-heading.has-failure {
-    color:lightcoral
+    color:white;
+    border-bottom: 1px solid white;
 }
 
-.section-heading-mouseover {
-    color:darkgray;
+.section-heading.has-failure {
+    
 }
-.section-heading-mouseover.has-failure {
-    color:red;
-}
-.section-heading-active {
-    color:black;
+.section-heading:hover.has-failure {
+    
 }
 .section-heading-active.has-failure {
-    color:black;
+    
 }
 
 
 .text-input{
     margin-top: 2px;
     border: 0;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.6);
     font-size:1.5em;
+    background-color:rgba(0, 0, 0, 0);
+    color:white;
 }
 .text-input.has-success {
-    border-color:green
+    border-color:rgba(0,255,0,1)
 }
 .text-input.has-failure {
-    border-color:red
+    border-color:rgba(240,128,128,1);
 }
 
 .text-input:focus{
-    border-color: #1e9ce6;
+    border-color: rgba(255, 255, 255, 1);
     outline: 0;
 }
 
@@ -57,16 +48,25 @@
     margin:1%;
     margin-bottom:0;
     font-size:1.5em;
+    color:white;
 }
 
 .dob-input {
     font-size:1.5em;
+    background-color:rgba(0, 0, 0, 0);
+    border-color:rgba(0,0,0,0);
+    border-bottom-color:rgba(255,255,255,0.6);
+    color:white;
 }
 .dob-input.has-success {
-    border-color:green
+    border-bottom-color:rgba(0,255,0,1)
 }
 .dob-input.has-failure {
-    border-color:red
+    border-bottom-color:rgba(240,128,128,1)
+}
+option {
+    background-color: #1ba1e2;
+    border-color:#1ba1e2;
 }
 
 .single-line {
@@ -75,6 +75,7 @@
 
 .misc-text{
     font-size:1.5em;
+    color:white;
 }
 
 .glyph-padding-textbox {
@@ -84,8 +85,24 @@
     padding-top:2%;
 }
 
-.glyphicon-ok { color:green}
-.glyphicon-remove { color: red}
+.glyphicon-ok { color:rgba(0,255,0,1);}
+.glyphicon-remove { color:rgba(240,128,128,1);}
+
+::-webkit-input-placeholder {
+   color:rgba(255, 255, 255, 0.5);
+}
+
+:-moz-placeholder { /* Firefox 18- */
+   color:rgba(255, 255, 255, 0.5);
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+   color:rgba(255, 255, 255, 0.5);
+}
+
+:-ms-input-placeholder {  
+   color:rgba(255, 255, 255, 0.5);
+}
 
 
 

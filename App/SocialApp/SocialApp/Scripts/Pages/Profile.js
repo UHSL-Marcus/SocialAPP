@@ -1,35 +1,13 @@
 ﻿
-function wireupHeadings() {
-    $(".section-heading").mouseover(function () {
-        if (!$(this).hasClass("section-heading-active"))
-            $(this).addClass("section-heading-mouseover");
-    });
-
-    $(".section-heading").mouseout(function () {
-            $(this).removeClass("section-heading-mouseover");
-    });
-    $(".section-heading").click(function () {
-        $(".section-heading-active").removeClass("section-heading-active");
-        $(this).addClass("section-heading-active");
-        $(".secton-content").addClass("hidden");
-        var headingID = $(this).attr('id');
-        var section = headingID.substring(0, headingID.search("_heading"));
-
-        $('#' + section + '_content').removeClass("hidden");
-
-        $('#selected_heading').val(section);
-
-        if ($(this).hasClass("section-hide-next")) 
-            $("#section_next_btn").addClass("hidden");
-        else 
-            $("#section_next_btn").removeClass("hidden");
-
-    });
-
-    $('#' + $('#selected_heading').val() + '_heading').click();
+var profile_mode;
+var ModeEnum = {
+    CREATE: "create",
+    UPDATE: "update"
 }
 
-function wireupFormControls() {
+function wireupFormControls(mode) {
+
+    profile_mode = mode;
     $("#section_next_btn").click(function () {
         $(".section-heading-active").next(".section-heading").click();
     });
@@ -60,6 +38,12 @@ function wireupFormControls() {
 
     $(".input_range").trigger("input").trigger("change");
 
+    $(".section-content").on("section:visible", function () {
+        if ($(this).hasClass("section-hide-next"))
+            $("#section_next_btn").addClass("hidden");
+        else
+            $("#section_next_btn").removeClass("hidden");
+    });
 
 }
 
@@ -106,22 +90,36 @@ function wireupProfileValidation() {
     });
 
     $("#profileConfPassword").on("blur keyup change", function () {
-        clearFeedback($(this));
-        clearFeedback($("#profileChangePassword"));
-        textEqual($(this), $("#profileChangePassword"), true);
+        
+        if (profile_mode === ModeEnum.UPDATE) {
+            clearFeedback($(this));
+            clearFeedback($("#profileChangePassword"));
+            textEqual($(this), $("#profileChangePassword"), true);
+        }
+        else if (profile_mode === ModeEnum.CREATE)
+            textEqual($(this), $("#profileChangePassword"), true, true);
+            
+
         closestSectionValidation($(this));
     });
 
     $("#profileChangePassword").on("blur keyup change", function () {
-        clearFeedback($(this));
-        clearFeedback($("#profileConfPassword"));
-        textEqual( $(this), $("#profileConfPassword"), true);
+        
+        if (profile_mode === ModeEnum.UPDATE) {
+            clearFeedback($(this));
+            clearFeedback($("#profileConfPassword"));
+            textEqual($(this), $("#profileConfPassword"), true);
+        }
+        else if (profile_mode === ModeEnum.CREATE)
+            textEqual($(this), $("#profileConfPassword"), true, true);
+            
+
         closestSectionValidation($(this));
     });
 
 
     // submit
-    $("#profileUpdateBtn").click(function () {
+    $("#profileUpdateBtn, #profileCreateBtn").click(function () {
         var valid = true;
         validateAll(".secton-content");
         
