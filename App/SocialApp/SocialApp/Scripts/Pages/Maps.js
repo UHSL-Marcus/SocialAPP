@@ -346,9 +346,14 @@ function addServiceMarker(service, array)
 
         var content = "<div class='flex-container'>" +
            "<div class='flex-1'>" +
-           "<h3>" + service.Name + "</h3>" +
-           "<h4>Rating</h4>" + service.Rating + "/10" +
-           "<h4>Categories</h4>";
+           "<h3>" + service.Name + "</h3>";
+            
+        service.Rating = parseFloat(service.Rating);
+        if (service.Rating > -1) {
+            content += "<h4>Rating</h4>" + service.Rating.toFixed(1) + "/10";
+        }
+
+        content += "<h4>Categories</h4>";
 
 
         if (service.CategoryNames) {
@@ -508,9 +513,14 @@ function addServiceToReport(service) {
     var content = "<div>" +
                         "<button class=\"btn btn-default\" type=\"button\" data-toggle=\"collapse\" data-target=\"#" + service.Name.replace(/\W/g, '') + "CollapseInfo\">" + service.Name + "</button>" +
                         "<div class=\"collapse\" id=\"" + service.Name.replace(/\W/g, '') + "CollapseInfo\">" +
-                            "<h3>" + service.Name + "</h3>" +
-                            "<h4>Rating</h4>" + service.Rating + "/10";
-                            "<h4>Categories</h4>";
+                            "<h3>" + service.Name + "</h3>";
+
+                            service.Rating = parseFloat(service.Rating);
+                            if (service.Rating > -1) {
+                                content += "<h4>Rating</h4>" + service.Rating.toFixed(1) + "/10";
+                            }
+
+                            content =+ "<h4>Categories</h4>";
                             
                             if (service.CategoryNames) {
                                 var splitCat = service.CategoryNames.split(",");

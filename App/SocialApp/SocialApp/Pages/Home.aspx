@@ -16,7 +16,8 @@
             <div class="flex-1 flex-container flex-center"> 
                 <asp:ImageButton runat="server" ID="profileBtn" ImageUrl="/Resources/Icons/03-Profile.png" CssClass="defaultNavBtn"  OnClick="profileBtn_Click"  ClientIDMode="Static" /> 
                 <asp:ImageButton runat="server" ID="statsBtn" ImageUrl="/Resources/Icons/02-Stats.png" CssClass="defaultNavBtn"  OnClick="statsBtn_Click"  ClientIDMode="Static" /> 
-                <asp:ImageButton runat="server" ID="mapsBtn" ImageUrl="/Resources/Icons/04-Maps.png" CssClass="defaultNavBtn"  OnClick="mapsBtn_Click"  ClientIDMode="Static" /> 
+                <asp:ImageButton runat="server" ID="mapsBtn" ImageUrl="/Resources/Icons/04-Maps.png" CssClass="defaultNavBtn"  OnClick="mapsBtn_Click"  ClientIDMode="Static" />
+                <input runat="server" type="hidden" id="followOnPath" />
             </div>
 
             <!-- ***********************************Login Modal*****************************************-->

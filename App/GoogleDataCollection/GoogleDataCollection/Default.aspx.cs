@@ -28,11 +28,11 @@ namespace GoogleDataCollection
 
         protected void uploadResults_Click(object sender, EventArgs e)
         {
-            String ErrorString = "";
-            String TempError = "";
-            String soapBody = "";
+            string Errorstring = "";
+            string TempError = "";
+            string soapBody = "";
             //string[] uploadedServices = placeData.Value.Split(new Char[] { ';' });
-            String rawServiceText = ServiceData.Value;
+            string rawServiceText = ServiceData.Value;
             string folderPath = Server.MapPath("");
             ArrayList services = new ArrayList();
 
@@ -42,7 +42,7 @@ namespace GoogleDataCollection
                 rawService rawServiceOb = JsonConvert.DeserializeObject<rawService>(rawServiceText);
                 town townOb = JsonConvert.DeserializeObject<town>(TownData.Value);
 
-                TempError = "String to Object Completed\n";
+                TempError = "string to Object Completed\n";
 
                 service serviceToStore = new service();
                 serviceToStore.place_id = rawServiceOb.place_id;
@@ -93,7 +93,7 @@ namespace GoogleDataCollection
 
                     aspectRatingCount = aspectRatingCount * 3; // max for each aspect is 3.
                     if (totalAspectRating > 0 && aspectRatingCount > 0)
-                        aspectRating = ((double)totalAspectRating / (double)aspectRatingCount) * 10;
+                        aspectRating = totalAspectRating / aspectRatingCount * 10;
                 }
 
                 TempError += "initalRating: " + initalRating + ", aspectRating: " + aspectRating + ", aspectRatingCount: " + aspectRatingCount + "\n";
@@ -104,7 +104,7 @@ namespace GoogleDataCollection
                 if (initalRating < 1 || aspectRating < 1)
                     divisor = 1;
 
-                if (!Double.TryParse("" + ((initalRating + aspectRating) / divisor), out serviceToStore.rating)) // average of them both to create the rating
+                if (!double.TryParse("" + ((initalRating + aspectRating) / divisor), out serviceToStore.rating)) // average of them both to create the rating
                     serviceToStore.rating = (double)0;
 
                 if (serviceToStore.rating == 0 && aspectRatingCount == 0)       // we can assume that if the rating is zero, and there are no aspect or review ratings, that the service has not been rated, 
@@ -119,7 +119,7 @@ namespace GoogleDataCollection
                 string typesFilename = "initial_categorisation.txt";
                 string typesPath = Path.Combine(folderPath, typesFilename);
 
-                string[] categoriesAndTypes = Regex.Replace(File.ReadAllText(typesPath, System.Text.Encoding.ASCII), @"\t|\n|\r", "").Split(new Char[] { ';' });
+                string[] categoriesAndTypes = Regex.Replace(File.ReadAllText(typesPath, Encoding.ASCII), @"\t|\n|\r", "").Split(new char[] { ';' });
 
                 ArrayList splitTypes = new ArrayList();
 
@@ -128,10 +128,10 @@ namespace GoogleDataCollection
                     splitTypes.Add(categoriesAndTypes[i].Split(new Char[] { ',' }));
                 }
 
-                Dictionary<String, ArrayList> tempcategory = new Dictionary<String, ArrayList>();
-                foreach (String[] categoryArray in splitTypes) // array of types and their category (index 0 is the category name)
+                Dictionary<string, ArrayList> tempcategory = new Dictionary<string, ArrayList>();
+                foreach (string[] categoryArray in splitTypes) // array of types and their category (index 0 is the category name)
                 {
-                    foreach (String type in categoryArray) // each type string
+                    foreach (string type in categoryArray) // each type string
                     {
                         if (rawServiceOb.types.Contains(type)) // this service has this type
                         {
@@ -151,16 +151,16 @@ namespace GoogleDataCollection
                 }
 
                 ArrayList tempAllcats = new ArrayList();
-                foreach (KeyValuePair<String, ArrayList> pair in tempcategory)
+                foreach (KeyValuePair<string, ArrayList> pair in tempcategory)
                 {
-                    tempAllcats.Add(new category(pair.Key, (String[])pair.Value.ToArray(typeof(String))));
+                    tempAllcats.Add(new category(pair.Key, (string[])pair.Value.ToArray(typeof(string))));
                 }
                 serviceToStore.categories = (category[])tempAllcats.ToArray(typeof(category));
 
                 TempError += "Categories Set\n";
 
-                String action = "SetNewService";
-                String serviceID = "-1";
+                string action = "SetNewService";
+                string serviceID = "-1";
 
                 TempError += "Getting Town...\n";
                 int townID = getTownID(townOb);
@@ -281,22 +281,22 @@ namespace GoogleDataCollection
 
                 TempError += "Done\n";
 
-                ErrorString = "\n-----New Entry-----\n" + TempError;
+                Errorstring = "\n-----New Entry-----\n" + TempError;
 
             }
             catch (Exception ex) {
-                ErrorString = "\n------New Error-------\nRaw Data: " + rawServiceText + "\nSOAP:\n" + soapBody + "\nLog:\n";
-                ErrorString += TempError + "\nException:\n";
-                ErrorString += ex.ToString();
+                Errorstring = "\n------New Error-------\nRaw Data: " + rawServiceText + "\nSOAP:\n" + soapBody + "\nLog:\n";
+                Errorstring += TempError + "\nException:\n";
+                Errorstring += ex.ToString();
             }
 
 
-            //errorText.Value += ErrorString;
+            //errorText.Value += Errorstring;
 
             StreamWriter objWriter = new StreamWriter("c:\\report.txt", true);
 
             // write a line of text to the file
-            objWriter.WriteLine(ErrorString);
+            objWriter.WriteLine(Errorstring);
 
             // close the stream
             objWriter.Close();
@@ -342,7 +342,7 @@ namespace GoogleDataCollection
                 return townID;
             else
             {
-                String soapBody = "<Town>" + new XElement("TownID", "-1") + 
+                string soapBody = "<Town>" + new XElement("TownID", "-1") + 
                     new XElement("Town", townName) + new XElement("County", county) +
                     //new XElement("Latitude", town.geometry.location.G) + 
                     //new XElement("Longitude", town.geometry.location.K) +
@@ -403,18 +403,18 @@ namespace GoogleDataCollection
                 }
                 else // create new category
                 {
-                    String SOAPbdy = @" <Category>
+                    string SOAPbdy = @" <Category>
                                             <CategoryID>" + catID + @"</CategoryID>
                                             <CategoryName>" + cat.Key + @"</CategoryName>
                                         </Category>";
                     HttpSOAPRequest(SOAPbdy, "SetNewCategory");
 
-                    foreach (String type in cat.Value)
+                    foreach (string type in cat.Value)
                     {
                         // make sure this subcategory exists in the database
                         if (arrayListContainsCaseInsensitve(allsubcatnames, type))
                         {
-                            String tempID = allsubcats.getElementFromSibling("SubCategory", "SubCategoryName", type, "SubCategoryID");
+                            string tempID = allsubcats.getElementFromSibling("SubCategory", "SubCategoryName", type, "SubCategoryID");
                             SOAPbdy = @"<pair>
                                             <CategoryID>" + catID + @"</CategoryID>
                                             <SubCategoryID>" + tempID + @"</SubCategoryID>
@@ -433,11 +433,11 @@ namespace GoogleDataCollection
                     /*subcatIDs = new XMLParse(allcategories.getElementFromSibling("Category", "CategoryName", cat.Key, "SubCategories", true)).getWholeSection("string");
                     
 
-                    foreach (String type in cat.Value)
+                    foreach (string type in cat.Value)
                     {
                         if (arrayListContainsCaseInsensitve(allsubcatnames, type))
                         {
-                            String tempID = allsubcats.getElementFromSibling("SubCategories", "SubCategoryName", type, "SubCategoryID");
+                            string tempID = allsubcats.getElementFromSibling("SubCategories", "SubCategoryName", type, "SubCategoryID");
                             if (!arrayListContainsCaseInsensitve(subcatIDs, tempID))
                             {
                                 action = "UpdateCategory";
@@ -452,15 +452,15 @@ namespace GoogleDataCollection
                 
                 if (action.Length > 1)
                 {
-                    String soapBody = @"<Category>
+                    string soapBody = @"<Category>
                                             <CategoryID>" + catID + @"</CategoryID>
                                             <CategoryName>" + cat.Key + @"</CategoryName>
                                             <SubCategories>";
 
-                    foreach (String subcatID in subcatIDs)
+                    foreach (string subcatID in subcatIDs)
                         soapBody += "<string>" + subcatID + "</string>";
 
-                    foreach(String type in cat.Value)
+                    foreach(string type in cat.Value)
                     {
                         if (arrayListContainsCaseInsensitve(allsubcatnames, type))
                         {
@@ -490,12 +490,12 @@ namespace GoogleDataCollection
             ArrayList names = allsubcats.getAllElementsText("SubCategoryName");
             
             // for each of the passed types check if it exists in the list of names
-            foreach (String type in types)
+            foreach (string type in types)
             {
                 if (!arrayListContainsCaseInsensitve(names, type))
                 {
                     // Create a new subcategory if the name is not in the list
-                    String soapBody = @"<Subcategory>
+                    string soapBody = @"<Subcategory>
                                             <SubCategoryID>-1</SubCategoryID>
                                             <SubCategoryName>" + type + @"</SubCategoryName>
                                         </Subcategory>";
@@ -505,16 +505,16 @@ namespace GoogleDataCollection
 
         }
 
-        private Boolean arrayListContainsCaseInsensitve(ArrayList al, String ob)
+        private bool arrayListContainsCaseInsensitve(ArrayList al, string ob)
         {
-            foreach (String entry in al)
+            foreach (string entry in al)
                 if(string.Equals(entry, ob, StringComparison.OrdinalIgnoreCase))
                     return true;
 
             return false;
         }
 
-        public String HttpSOAPRequest(String body, string action)
+        public string HttpSOAPRequest(string body, string action)
         {
             string SOAPReq = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
             SOAPReq += "<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">";
@@ -534,7 +534,7 @@ namespace GoogleDataCollection
             req.Headers.Add("SOAPAction", "\"http://tempuri.org/" + action + "\"");
 
 
-            //Pass the SoapRequest String to the WebService
+            //Pass the SoapRequest string to the WebService
             StreamWriter stmw = new StreamWriter(req.GetRequestStream());
             stmw.Write(SOAPReq);
             stmw.Flush();

@@ -37,11 +37,11 @@ namespace SocialApp.Pages
             if (Session[Paths.TOWNLIST] == null) mapsTownList.Items.Add("No Towns"); // if something has gone wrong, still null
             else
             {
-                ArrayList towns = (new XMLParse((String)Session[Paths.TOWNLIST], SOAPRequest.soapNamespace)).getAllElementsText("Town");    // pull out all the town names
+                ArrayList towns = (new XMLParse((string)Session[Paths.TOWNLIST], SOAPRequest.soapNamespace)).getAllElementsText("Town");    // pull out all the town names
 
                 // add em to the options of the dropdown component, including home
                 mapsTownList.Items.Add("Home");
-                foreach (String town in towns)
+                foreach (string town in towns)
                 {
                     mapsTownList.Items.Add(town);
                 }
@@ -94,8 +94,8 @@ namespace SocialApp.Pages
 
             int tID = 0;
             int returnTID = 0;
-            Int32.TryParse(id, out tID);
-            Int32.TryParse(result, out returnTID);  // safe parsing
+            int.TryParse(id, out tID);
+            int.TryParse(result, out returnTID);  // safe parsing
 
 
             if (tID == returnTID)
@@ -106,28 +106,38 @@ namespace SocialApp.Pages
                 Dictionary<string, List<string>> allCategories = new Dictionary<string, List<string>>();        // Key: Category name, Value: List of subcategory names related to the category
                 Dictionary<string, List<string>> allSubCategories = new Dictionary<string, List<string>>();     // Key: Subcategory name, Value: list of service ID's which have that subcategory
                 Dictionary<string, string> allServices = new Dictionary<string, string>();                      // Key: Service ID, Value: service data (JSON object/string)
+                Dictionary<string, int> userProfileRatings = new Dictionary<string, int>();                     // store the user rating for each category
+
+                XMLParse userInfo = new XMLParse((string)Session[Paths.USERDETAILS], SOAPRequest.soapNamespace);
 
 
-                foreach (String serviceXml in allServe)                                                                                 // for each service in the array of town services
+                foreach (string serviceXml in allServe)                                                                                 // for each service in the array of town services
                 {
                     XMLParse serviceInfoParse = new XMLParse(serviceXml, SOAPRequest.soapNamespace);                                    // XML parse for entire service info
                     XMLParse serviceParse = new XMLParse(serviceInfoParse.getWholeSection("Service")[0], SOAPRequest.soapNamespace);    // XML parse for only the service data, not related town or category sections.
 
-                    List<String> serviceCategories = serviceInfoParse.getWholeSection("Category");                                      // create array of category info
-                    List<String> serviceSubCategories = serviceInfoParse.getWholeSection("SubCategory");                                // ^^^^ subcategories
+                    List<string> serviceCategories = serviceInfoParse.getWholeSection("Category");                                      // create array of category info
+                    List<string> serviceSubCategories = serviceInfoParse.getWholeSection("SubCategory");                                // ^^^^ subcategories
 
-                    String serviceID = serviceParse.getElementText("ServiceID");                                                        // grab the service ID
+                    string serviceID = serviceParse.getElementText("ServiceID");                                                        // grab the service ID
 
                     List<string> allCategoryNames = new List<string>();                                                                 // store all the names of the categories and subcategories 
                     List<string> allSubCategoryNames = new List<string>();                                                              // for adding to the XML later
 
 
-                    foreach (String category in serviceCategories)                                                                      // loop through each of the categories returned with this service
+                    foreach (string category in serviceCategories)                                                                      // loop through each of the categories returned with this service
                     {
 
                         XMLParse catXml = new XMLParse(category, SOAPRequest.soapNamespace);                                            // pull out the name and the list of subcategory ID's
-                        String catName = catXml.getElementText("CategoryName");
-                        String catID = catXml.getElementText("CategoryID");
+                        string catName = catXml.getElementText("CategoryName");
+                        string catID = catXml.getElementText("CategoryID");
+
+                        if (!userProfileRatings.ContainsKey(catName))                                                                   // add the rating the user gave this category
+                        {
+                            int userRating = 0;
+                            int.TryParse(userInfo.getElementFromSibling("CategoryInfo", "CategoryID", catID, "CategoryValue"), out userRating);
+                            userProfileRatings.Add(catName, userRating);
+                        }
 
                         if (!HelperMethods.List_Contains_Caseinsensitve(allCategoryNames, catName))
                             allCategoryNames.Add(catName);                                                                              // add this category name if needed
@@ -149,7 +159,7 @@ namespace SocialApp.Pages
 
                             if (HelperMethods.List_Contains_Caseinsensitve(subcatIDs, subcatID))                                        // check if this subcategory is under the current category
                             {
-                                if (!allCategories[catName].Contains(subcatName))                                                       // name subcategory name to the list if needed
+                                if (!allCategories[catName].Contains(subcatName))                                                       // add subcategory name to the list if needed
                                     allCategories[catName].Add(subcatName);
 
                                 if (!allSubCategories.ContainsKey(subcatName))                                                          // create new entry in subcategory dictionary if needed
@@ -175,31 +185,6 @@ namespace SocialApp.Pages
                     if (!allServices.ContainsKey(serviceID))
                         allServices.Add(serviceID, serviceParse.convertToJSON());                                                       // add the entry to the services dictionary
                 }
-
-                Dictionary<string, int> userProfileRatings = new Dictionary<string, int>();
-
-                XMLParse userInfo = new XMLParse((string)Session[Paths.USERDETAILS], SOAPRequest.soapNamespace);
-
-                userProfileRatings.Add("Education", int.Parse(userInfo.getElementText("Category_1")));
-                userProfileRatings.Add("Transport", int.Parse(userInfo.getElementText("Category_2")));
-                userProfileRatings.Add("Entertainment", int.Parse(userInfo.getElementText("Category_3")));
-                userProfileRatings.Add("Disposal", int.Parse(userInfo.getElementText("Category_4")));
-                userProfileRatings.Add("Local Economy", int.Parse(userInfo.getElementText("Category_5")));
-                userProfileRatings.Add("Comms & Soc Conn", int.Parse(userInfo.getElementText("Category_6")));
-                userProfileRatings.Add("Well being", int.Parse(userInfo.getElementText("Category_7")));
-                userProfileRatings.Add("Psychological", int.Parse(userInfo.getElementText("Category_8")));
-                userProfileRatings.Add("Recog", int.Parse(userInfo.getElementText("Category_9")));
-                userProfileRatings.Add("Health", int.Parse(userInfo.getElementText("Category_10")));
-                userProfileRatings.Add("Saftey Sec", int.Parse(userInfo.getElementText("Category_11")));
-                userProfileRatings.Add("Consum", int.Parse(userInfo.getElementText("Category_12")));
-                userProfileRatings.Add("Enviro Perf", int.Parse(userInfo.getElementText("Category_13")));
-                userProfileRatings.Add("Biodi", int.Parse(userInfo.getElementText("Category_14")));
-                userProfileRatings.Add("Govern", int.Parse(userInfo.getElementText("Category_15")));
-                userProfileRatings.Add("Shelter", int.Parse(userInfo.getElementText("Category_16")));
-                userProfileRatings.Add("Emotional Well", int.Parse(userInfo.getElementText("Category_17")));
-
-                
-
 
                 string allServicesJSON = JsonConvert.SerializeObject(allServices);                                                      // convert all dictionaries to JSON Strings
                 string allCategoriesJSON = JsonConvert.SerializeObject(allCategories);

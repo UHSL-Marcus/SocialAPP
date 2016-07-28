@@ -22,18 +22,21 @@
             </div>
             <div="flex-container">
                 <div><span class="glyphicon glyphicon-chevron-left statGraphSwap"></span></div>
-                <div id="suitability_content" class="secton-content hidden flex-1">
+                <div id="suitability_content" class="section-content hidden">
                     <div class="proVsTownChartContainer statGraphContainer statViewHide"></div>          
                 </div>
-                <div id="physical_content" class="secton-content hidden flex-1">
+                <div id="physical_content" class="section-content hidden">
                     <div class="physServeChartContainer statGraphContainer statViewHide"></div>
                 </div>
-                <div id="virtual_content" class="secton-content hidden flex-1">
+                <div id="virtual_content" class="section-content hidden">
                     <div class="virtServeChartContainer statGraphContainer statViewHide"></div>
                 </div>
                 <div><span class="glyphicon glyphicon-chevron-right statGraphSwap" ></span></div>   
             </div>
-            <asp:DropDownList runat="server" ID="statsTownList" ClientIDMode="Static" AutoPostBack="true" OnSelectedIndexChanged="statsTownList_SelectedIndexChanged" />
+            <div class="flex-container">
+                <asp:DropDownList runat="server" ID="statsTownList" ClientIDMode="Static" AutoPostBack="true" OnSelectedIndexChanged="statsTownList_SelectedIndexChanged" />
+                <div class="flex-1"></div>
+            </div>
         </div>
 
         <div class="modal fade" id="statExpandModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

@@ -32,7 +32,7 @@
                         <div id="lifestyle_heading" class="section-heading">LIFESTYLE</div>
                     </div>
                     <div="flex-container flex-column">
-                        <div id="personal_content" class="secton-content hidden">
+                        <div id="personal_content" class="section-content hidden">
                             <div class="flex-container">
                                 <input type="text" runat="server" id="profilePersonalFName" class="text-input" placeholder="First Name" ClientIDMode="Static" />
                                 <span class="glyphicon glyphicon-ok hidden glyph-padding-textbox"></span>
@@ -63,7 +63,7 @@
                                 <span class="glyphicon glyphicon-remove hidden glyph-padding-dropdown"></span>
                             </div> 
                         </div>
-                        <div id="login_content" class="secton-content hidden">
+                        <div id="login_content" class="section-content hidden">
                            <div class="flex-container">
                                 <input type="text" runat="server" id="profileEmail" class="text-input" placeholder="Email" ClientIDMode ="Static" />
                                 <span class="glyphicon glyphicon-ok hidden glyph-padding-textbox"></span>
@@ -85,7 +85,7 @@
                                 <span class="glyphicon glyphicon-remove hidden glyph-padding-textbox"></span>
                             </div>
                         </div>
-                        <div id="contact_content" class="secton-content hidden">
+                        <div id="contact_content" class="section-content hidden">
                             <div class="flex-container">
                                 <input type="text" runat="server" id="profileHouseNumber" class="text-input" placeholder="House Number" ClientIDMode ="Static" />
                                 <span class="glyphicon glyphicon-ok hidden glyph-padding-textbox"></span>
@@ -112,7 +112,7 @@
                                 <span class="glyphicon glyphicon-remove hidden glyph-padding-textbox"></span>
                             </div>
                         </div>
-                        <div id="lifestyle_content" class="secton-content hidden section-hide-next" runat="server" ClientIDMode="Static">
+                        <div id="lifestyle_content" class="section-content hidden section-hide-next" runat="server" ClientIDMode="Static">
                             
                             
                         </div>

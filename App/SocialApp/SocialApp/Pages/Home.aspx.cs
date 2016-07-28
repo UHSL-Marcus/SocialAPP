@@ -13,17 +13,18 @@ namespace SocialApp.Pages
             thisMaster.setChild(this);
         }
 
-        private void showLogin()
+        private void showLogin(string path)
         {
+            followOnPath.Value = path;
             string t = "showLogin();";
             ScriptManager.RegisterStartupScript(homeUpdatePanel, homeUpdatePanel.GetType(), "ShowLogin" + UniqueID, t, true);
             t = "wireUp_LoginEvents();";
             ScriptManager.RegisterStartupScript(homeUpdatePanel, homeUpdatePanel.GetType(), "WireuUpLogin" + UniqueID, t, true);
         }
 
-        private bool loginCheck()
+        private bool loginCheck(string path)
         {
-            if (Session[Paths.USERDETAILS] == null) { showLogin(); return false; }
+            if (Session[Paths.USERDETAILS] == null) { showLogin(path); return false; }
             return true;
         }
 
@@ -34,7 +35,7 @@ namespace SocialApp.Pages
 
         protected void profileBtn_Click(object sender, EventArgs e)
         {
-            if (loginCheck())
+            if (loginCheck(Paths.PAGE_PROFILE))
             {
                 Response.Redirect(Paths.PAGE_PROFILE);
             }
@@ -42,7 +43,7 @@ namespace SocialApp.Pages
 
         protected void statsBtn_Click(object sender, EventArgs e)
         {
-            if (loginCheck())
+            if (loginCheck(Paths.PAGE_STATS))
             {
                 Response.Redirect(Paths.PAGE_STATS);
             }
@@ -50,7 +51,7 @@ namespace SocialApp.Pages
 
         protected void mapsBtn_Click(object sender, EventArgs e)
         {
-            if (loginCheck())
+            if (loginCheck(Paths.PAGE_MAPS))
             {
                 Response.Redirect(Paths.PAGE_MAPS);
             }
@@ -71,11 +72,12 @@ namespace SocialApp.Pages
                 Session[Paths.USERDETAILS] = response;
                 Session[Paths.USERGEOLOC] = HTTPRequest.getGoogleGeoLocation(response);
                 thisMaster.signedInCheck();
+                Response.Redirect(followOnPath.Value);
             }
             else
             {
                 info.Text = "Username/Passoword incorrect";
-                showLogin();
+                showLogin(followOnPath.Value);
             };
         }
 
